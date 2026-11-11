@@ -10,6 +10,20 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- PDF.js for Direct Formatted PDF Text Extraction -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <!-- MathJax 3 for Textbook-Quality Exponents, Fractions, Matrices & Equations -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
     .svg-diagram-container svg {
       max-width: 100%;
@@ -18,6 +32,12 @@
       height: auto;
       margin: 0 auto;
       display: block;
+    }
+    /* Keep inline MathJax formulas aligned smoothly with option text */
+    mjx-container {
+      display: inline-block !important;
+      margin: 0 1px !important;
+      vertical-align: middle;
     }
   </style>
 </head>
@@ -82,7 +102,7 @@
             Turn Any Question PDF into an Interactive Mock Test & Track Your Progress
           </h2>
           <p class="text-sm sm:text-base text-indigo-100/90 leading-relaxed">
-            This platform converts any question-and-answer PDF or text into a timed exam interface with <strong>Prompt-Engineered Vector SVG &amp; Text Diagram Recreation</strong> (circuits, phasors, graphs, Venn diagrams, and tables), organizes attempts into exam folders (like <strong>UIIC AO</strong>, <strong>GATE</strong>, <strong>ESE</strong>, <strong>TGPSC</strong>), and visualizes your score progression over time.
+            This platform converts any question-and-answer PDF or text into a timed exam interface with <strong>MathJax LaTeX Equations</strong> (exponents, fractions, matrices, integrals) and <strong>Vector SVG Diagram Recreation</strong> (circuits, phasors, graphs, Venn diagrams), organizes attempts into exam folders (like <strong>UIIC AO</strong>, <strong>GATE</strong>, <strong>ESE</strong>, <strong>TGPSC</strong>), and visualizes your score progression over time.
           </p>
           <div class="pt-2 flex flex-wrap gap-3">
             <button
@@ -105,7 +125,7 @@
       <div>
         <div class="mb-4">
           <h3 class="text-lg font-bold text-slate-900">How to Use This Website Properly</h3>
-          <p class="text-xs text-slate-500">Follow these simple steps to create error-free mock tests with full diagrams and track your marks.</p>
+          <p class="text-xs text-slate-500">Follow these simple steps to create error-free mock tests with full math formulas, diagrams, and marks tracking.</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -121,10 +141,10 @@
           <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
             <div>
               <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 font-extrabold text-sm flex items-center justify-center mb-3">2</div>
-              <h4 class="font-bold text-sm text-slate-900 mb-1.5">Prompt-Engineered AI Extraction</h4>
-              <p class="text-xs text-slate-600 leading-relaxed">Copy our engineered AI prompt and upload your PDF to Gemini/ChatGPT. It forbids bloated base64 dumps and writes clean, fast <code>[SVG_START]</code> diagrams!</p>
+              <h4 class="font-bold text-sm text-slate-900 mb-1.5">Engineered LaTeX + SVG Prompt</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">Copy our engineered AI prompt in Step 2. It formats all powers, fractions, and roots in clean <code>$...$</code> LaTeX and draws lightweight <code>[SVG_START]</code> diagrams!</p>
             </div>
-            <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-emerald-600 font-semibold">Zero truncation &bull; Full 65-Q support</div>
+            <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-emerald-600 font-semibold">Crystal-clear powers &amp; fractions</div>
           </div>
 
           <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
@@ -218,10 +238,10 @@
           <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-200 space-y-3">
             <div class="flex items-center justify-between">
               <h2 class="text-sm font-bold text-indigo-950">2. Engineered AI Extraction Prompt</h2>
-              <span class="text-[11px] bg-emerald-200 text-emerald-950 font-bold px-2 py-0.5 rounded">Few-Shot + Anti-Bloat</span>
+              <span class="text-[11px] bg-emerald-200 text-emerald-950 font-bold px-2 py-0.5 rounded">LaTeX Math + SVG</span>
             </div>
             <p class="text-xs text-indigo-900/80 leading-relaxed">
-              Designed with strict Prompt Engineering rules: Role Assignment, Negative Constraints (blocks 1000-line Base64 page dumps), Few-Shot SVG Examples, and NAT/MSQ conversion.
+              Fixes broken exponents, fractions (<code>-1 2</code> &rarr; <code>-\frac{1}{2}</code>), subscripts, matrices, and blanks using MathJax LaTeX, while generating clean 35-line <code>[SVG_START]</code> diagrams.
             </p>
             <button
               onclick="copyStrictAiPrompt()"
@@ -245,7 +265,7 @@
             <div>
               <h2 class="text-base font-bold text-slate-900">3. Paste Formatted Questions or Upload File</h2>
               <p class="text-xs text-slate-500">
-                Supports <code>[SVG_START]...[SVG_END]</code>, <code>[DIAGRAM_START]...[DIAGRAM_END]</code>, MCQ, MSQ, and NAT questions.
+                Supports <code>$...$</code> LaTeX powers/fractions, <code>x^2</code>, <code>[SVG_START]</code>, and auto-cleans broken Unicode math characters!
               </p>
             </div>
             <div class="flex items-center gap-2">
@@ -254,7 +274,7 @@
                 <input type="file" id="fileUploadInput" accept=".txt,.pdf" class="hidden" onchange="handleFileUpload(event)" />
               </label>
               <button onclick="loadDemoQuestions()" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
-                Load Demo Paper (4 Diagrams)
+                Load Demo Paper (Math + Diagrams)
               </button>
             </div>
           </div>
@@ -264,7 +284,7 @@
             rows="13"
             oninput="updateLiveParseCount()"
             class="w-full flex-1 p-3.5 rounded-lg border border-slate-300 font-mono text-xs leading-relaxed focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-            placeholder="Paste the AI output here or upload your .txt file... The live counter below will immediately verify how many questions and diagrams were detected!"
+            placeholder="Paste the AI output here or upload your .txt file... Exponents like $e^{-2t}$, fractions like $-\frac{1}{2}$, and SVG diagrams will render automatically!"
           ></textarea>
 
           <div id="parseErrorBox" class="hidden mt-3 p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium"></div>
@@ -323,7 +343,7 @@
               </div>
             </div>
 
-            <!-- Question Text -->
+            <!-- Question Text (Supports MathJax LaTeX & Formatted Blanks) -->
             <div id="liveQuestionText" class="text-base font-medium text-slate-900 mb-4 whitespace-pre-line leading-relaxed"></div>
 
             <!-- 1. DEDICATED VECTOR SVG DIAGRAM WINDOW -->
@@ -527,7 +547,7 @@
     <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 space-y-4">
       <div class="flex items-center justify-between">
         <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-800">
-          Prompt-Engineered Extraction Template
+          Prompt-Engineered Extraction Template (LaTeX + SVG)
         </span>
         <button onclick="togglePromptPreviewModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold leading-none">&times;</button>
       </div>
@@ -710,6 +730,47 @@
     }
 
     // ============================================================================
+    // UNICODE MATH NORMALIZER & RICH MATH/BLANK FORMATTER
+    // Converts broken PDF mathematical italic Unicode symbols (𝑥, 𝑦, 𝑝, 𝑞) into
+    // clean ASCII/LaTeX and renders exponents, subscripts, and blanks cleanly!
+    // ============================================================================
+    function normalizeMathText(str) {
+      if (!str) return "";
+      // NFKC normalization automatically converts mathematical alphanumeric symbols (𝑥 -> x, 𝑦 -> y, 𝑝 -> p, 1 -> 1)
+      let normalized = String(str).normalize("NFKC");
+      // Replace weird PDF minus signs (U+2212) with standard minus
+      normalized = normalized.replace(/\u2212/g, "-");
+      // Replace broken PDF Private Use Area box glyphs (\uF000-\uF8FF) with clean blanks or spaces
+      normalized = normalized.replace(/[\uF000-\uF8FF]+/g, " _____ ");
+      return normalized;
+    }
+
+    function formatQuestionAndOptionHtml(rawStr) {
+      const clean = escapeHtml(normalizeMathText(rawStr));
+      // Style fill-in-the-blank underscores (3 or more underscores) as a visual exam blank pill
+      let formatted = clean.replace(
+        /_{3,}/g,
+        '<span class="inline-block min-w-[60px] border-b-2 border-indigo-500 mx-1 px-1 text-center text-indigo-700 font-mono text-xs">&nbsp;&nbsp;&nbsp;&nbsp;</span>'
+      );
+      // If the text does NOT use $...$ LaTeX but has raw caret exponents like 10^-6 or x^2, format them cleanly
+      if (!formatted.includes("$")) {
+        formatted = formatted
+          .replace(/\^\{([^}]+)\}/g, "<sup>$1</sup>")
+          .replace(/\^([+\-]?\d+[A-Za-z]*)/g, "<sup>$1</sup>")
+          .replace(/_\{([^}]+)\}/g, "<sub>$1</sub>");
+      }
+      return formatted;
+    }
+
+    function triggerMathJaxRender(containerEl) {
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise(containerEl ? [containerEl] : undefined).catch((err) =>
+          console.warn("MathJax typeset warning:", err)
+        );
+      }
+    }
+
+    // ============================================================================
     // STATE MANAGEMENT
     // ============================================================================
     const LOCAL_STORAGE_KEY = "mocktrack_attempts_v1";
@@ -807,14 +868,12 @@
       refreshSectionDropdowns();
       showInfoPopup(
         "Welcome to MockTracker",
-        "You can separate different exams under different sections. Use our Prompt-Engineered AI template in Step 2 to extract all 65+ questions and clean vector SVG diagrams without file bloat or truncation!"
+        "You can separate different exams under different sections. Exponents, fractions, matrices, and fill-in-the-blanks are now rendered in textbook quality with MathJax LaTeX + Vector SVG diagrams!"
       );
     });
 
     // ============================================================================
     // SMART SVG SANITIZER & ANTI-BLOAT OPTIMIZER
-    // Automatically strips 1000-line Base64 PDF page dumps (<mask>/<image>)
-    // while keeping vector paths and <text> labels intact!
     // ============================================================================
     function sanitizeSvgMarkup(rawSvg) {
       if (!rawSvg) return "";
@@ -823,7 +882,6 @@
         .replace(/```/g, "")
         .trim();
 
-      // Remove scripts and inline event handlers
       cleaned = cleaned
         .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, "")
         .replace(/\son\w+\s*=\s*["'][^"']*["']/gi, "");
@@ -996,13 +1054,12 @@
     };
 
     // ============================================================================
-    // UNIVERSAL PARSER: SUPPORTS [SVG_START], [DIAGRAM_START], MCQ, MSQ & NAT
+    // UNIVERSAL PARSER: SUPPORTS LATEX MATH, [SVG_START], [DIAGRAM_START], MCQ & NAT
     // ============================================================================
     function parseStrictTextQuestions(rawText) {
       const normalized = rawText.replace(/\r\n/g, "\n").trim();
       if (!normalized) return [];
 
-      // Split by "---" separator OR by Q1:, Q.1, Question 1 boundaries
       let blocks = normalized
         .split(/\n\s*---+\s*\n/)
         .map(b => b.trim())
@@ -1018,7 +1075,6 @@
       const parsedQuestions = [];
 
       for (const block of blocks) {
-        // Ignore preamble/header text blocks that have no Question number or Answer key
         if (!/(?:^|\n)\s*(?:Q\.?\s*\d+|Question\s*\d+|\d+\s*[.)])/i.test(block) && !/Answer\s*[:\-]/i.test(block)) {
           continue;
         }
@@ -1040,7 +1096,6 @@
         for (const rawLine of rawLines) {
           const trimmedLine = rawLine.trim();
 
-          // 1. Check for Vector SVG Code Words: [SVG_START] ... [SVG_END]
           if (/^\[SVG_START\]$/i.test(trimmedLine)) {
             insideSvg = true;
             continue;
@@ -1050,7 +1105,6 @@
             continue;
           }
           if (insideSvg) {
-            // Auto-recover if an SVG was unclosed before Options or Answer
             if (/^(?:\(?[A-Da-d]\)|[A-Da-d][).:\-])\s+.+$/.test(trimmedLine) || /^(?:Answer|Correct\s*Answer|Ans)\s*[:\-]/i.test(trimmedLine)) {
               insideSvg = false;
             } else {
@@ -1059,7 +1113,6 @@
             }
           }
 
-          // 2. Check for Monospace ASCII Diagram Code Words: [DIAGRAM_START] ... [DIAGRAM_END]
           if (/^\[DIAGRAM_START\]$/i.test(trimmedLine)) {
             insideDiagram = true;
             continue;
@@ -1081,10 +1134,10 @@
 
           if (optMatch && (mode === "question" || mode === "options")) {
             mode = "options";
-            options.push(optMatch[3].trim());
+            options.push(normalizeMathText(optMatch[3].trim()));
           } else if (ansMatch) {
             mode = "answer";
-            rawAnswerToken = ansMatch[1].trim();
+            rawAnswerToken = normalizeMathText(ansMatch[1].trim());
             const firstLetterMatch = rawAnswerToken.match(/^[\(\[]?([A-Ea-e1-5])[\)\]]?/);
             if (firstLetterMatch) {
               const token = firstLetterMatch[1].toUpperCase();
@@ -1096,22 +1149,21 @@
             }
           } else if (expMatch) {
             mode = "explanation";
-            if (expMatch[1]) explanationLines.push(expMatch[1].trim());
+            if (expMatch[1]) explanationLines.push(normalizeMathText(expMatch[1].trim()));
           } else {
             if (mode === "question") {
               const cleanedQLine = questionLines.length === 0
                 ? trimmedLine.replace(/^(?:Q\.?\s*\d+[A-Za-z]?|Question\s*\d+|\d+)[\s:.)]+/i, "").trim()
                 : trimmedLine;
-              if (cleanedQLine) questionLines.push(cleanedQLine);
+              if (cleanedQLine) questionLines.push(normalizeMathText(cleanedQLine));
             } else if (mode === "options" && options.length > 0) {
-              options[options.length - 1] += " " + trimmedLine;
+              options[options.length - 1] += " " + normalizeMathText(trimmedLine);
             } else if (mode === "explanation") {
-              explanationLines.push(trimmedLine);
+              explanationLines.push(normalizeMathText(trimmedLine));
             }
           }
         }
 
-        // Auto-build options for Numerical Answer Type (NAT) questions if options were omitted
         if (questionLines.length > 0 && options.length === 0 && rawAnswerToken) {
           options.push(
             `${rawAnswerToken}`,
@@ -1122,9 +1174,7 @@
           answerIndex = 0;
         }
 
-        // Fallback if a question was truncated before options/answers (e.g., cut-off file)
         if (questionLines.length > 0 && options.length < 2 && svgLines.length > 0) {
-          // If closing </svg> was cut off, append it so the partial diagram still renders safely
           let joinedSvg = svgLines.join("\n");
           if (!/<\/svg>/i.test(joinedSvg)) joinedSvg += "\n</svg>";
           svgLines = [joinedSvg];
@@ -1188,11 +1238,11 @@
             const pageLines = content.items.map(item => item.str).join(" ");
             extracted += pageLines + "\n";
           }
-          document.getElementById("rawTextInput").value = extracted;
+          document.getElementById("rawTextInput").value = normalizeMathText(extracted);
           updateLiveParseCount();
         } else {
           const text = await file.text();
-          document.getElementById("rawTextInput").value = text;
+          document.getElementById("rawTextInput").value = normalizeMathText(text);
           updateLiveParseCount();
         }
       } catch (err) {
@@ -1201,43 +1251,47 @@
     };
 
     // ============================================================================
-    // PROMPT-ENGINEERED MASTER PROMPT GENERATOR
+    // PROMPT-ENGINEERED MASTER PROMPT GENERATOR (WITH LATEX MATH + SVG RULES)
     // ============================================================================
     function getEngineeredPromptText() {
       return `<ROLE>
-You are an expert Exam Document Parser and Clean Vector SVG Schematic Designer. Your task is to extract EVERY question, option, diagram, and answer from the attached exam PDF(s) into a strict, machine-parseable plain-text format.
+You are an expert Exam Document Parser, Mathematical Typesetter, and Clean Vector SVG Schematic Designer. Your task is to extract EVERY question, option, diagram, and answer from the attached exam PDF(s) into a strict, machine-parseable plain-text format.
 </ROLE>
 
 <CRITICAL_CONSTRAINTS>
-1. NO BASE64 OR RASTER IMAGES: NEVER use Python PDF-to-SVG page dump tools (like Inkscape/PyMuPDF page SVG export) that embed \`<image>\`, \`xlink:href="data:image/png;base64..."\`, \`<mask>\`, or \`<clipPath>\`. Those bloat the file and cause truncation.
-2. HAND-CODED MINIMALIST SVG ONLY: When a question has a diagram, circuit, graph, table, or figure, write a clean, hand-coded \`<svg viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">\` using ONLY primitive vector elements (\`<line>\`, \`<rect>\`, \`<circle>\`, \`<ellipse>\`, \`<path>\`, \`<polygon>\`, \`<text>\`).
-3. STRICT SVG LINE LIMIT: Every \`<svg>\` block MUST be under 35 lines of code. Place every label, number, axis, and component value clearly using \`<text>\` tags.
-4. COMPLETE EXTRACTION & BATCHING: Extract ALL questions sequentially. If the paper has more than 25 questions, output Q1 to Q25 first, and pause at the end asking "Reply CONTINUE for Q26+" so you never hit output token limits or truncate a question mid-SVG.
-5. NAT (NUMERICAL) & MSQ HANDLING:
+1. MATHEMATICAL EXPONENTS, SUBSCRIPTS, FRACTIONS & SYMBOLS (LATEX):
+   - NEVER use raw PDF Unicode mathematical italic characters (like 𝑥, 𝑦, 𝑝, 𝑞) or leave blank spaces where powers, roots, or fraction bars belong (never write "-1 2" for -1/2 or "e -2t" for e^(-2t)).
+   - Wrap ALL mathematical expressions, exponents, subscripts, fractions, matrices, integrals, and Greek symbols in inline LaTeX \`$ ... $\` delimiters!
+   - Examples: Write \`$x + py + q = 0$\`, \`$p = -\\frac{1}{2}$\`, \`$10^{-6}\\text{ F}$\`, \`$e^{-t/\\tau}$\`, \`$V_{rms} = \\frac{V_m}{\\sqrt{2}}$\`, \`$\\angle 36.87^\\circ$\`, \`$\\Omega$\`.
+   - For fill-in-the-blank questions, always use 5 standard underscores \`_____\` (never special PDF box characters).
+2. NO BASE64 OR RASTER IMAGES: NEVER use Python PDF-to-SVG page dump tools (like Inkscape/PyMuPDF page SVG export) that embed \`<image>\`, \`xlink:href="data:image/png;base64..."\`, \`<mask>\`, or \`<clipPath>\`.
+3. HAND-CODED MINIMALIST SVG ONLY: When a question has a diagram, circuit, graph, table, or figure, write a clean, hand-coded \`<svg viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">\` using ONLY primitive vector elements (\`<line>\`, \`<rect>\`, \`<circle>\`, \`<ellipse>\`, \`<path>\`, \`<polygon>\`, \`<text>\`).
+4. STRICT SVG LINE LIMIT: Every \`<svg>\` block MUST be under 35 lines of code. Place every label, number, axis, and component value clearly using \`<text>\` tags with standard characters (Ω, °, μ, ±).
+5. COMPLETE EXTRACTION & BATCHING: Extract ALL questions sequentially. If the paper has more than 25 questions, output Q1 to Q25 first, and pause at the end asking "Reply CONTINUE for Q26+" so you never hit output token limits.
+6. NAT (NUMERICAL) & MSQ HANDLING:
    - Every question MUST have 4 selectable options formatted strictly as \`A) ...\`, \`B) ...\`, \`C) ...\`, \`D) ...\`.
    - If a question is a Numerical Answer Type (NAT) without options in the PDF, generate 4 plausible numerical options \`A)\`, \`B)\`, \`C)\`, \`D)\` where one option matches the official answer key value/range, and set \`Answer:\` to that letter.
-   - If a question is Multiple Select (e.g., A and C), list the combined correct letters in Option A or mark the primary correct letter in \`Answer:\`.
-6. NO MARKDOWN FENCES: Output raw plain text only. Do NOT wrap individual SVG blocks in \`\`\`xml or \`\`\`svg fences. Separate every question strictly with \`---\` on its own line.
+7. NO MARKDOWN FENCES: Output raw plain text only. Separate every question strictly with \`---\` on its own line.
 </CRITICAL_CONSTRAINTS>
 
 <OUTPUT_SCHEMA>
-Q[Number]: [Full Question Text]
+Q[Number]: [Full Question Text with $...$ LaTeX for all math/exponents/fractions]
 [SVG_START]
 <svg viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
   <!-- Only needed if the question has a figure, graph, circuit, or table. Max 35 lines. NO base64 <image>! -->
 </svg>
 [SVG_END]
-A) [Option A text]
-B) [Option B text]
-C) [Option C text]
-D) [Option D text]
+A) [Option A text with $...$ LaTeX]
+B) [Option B text with $...$ LaTeX]
+C) [Option C text with $...$ LaTeX]
+D) [Option D text with $...$ LaTeX]
 Answer: [Single Letter: A, B, C, or D]
-Explanation: [Concise 1-2 line formula/solution steps, or state answer key value]
+Explanation: [Concise 1-2 line formula/solution steps using $...$ LaTeX]
 ---
 </OUTPUT_SCHEMA>
 
 <FEW_SHOT_EXAMPLES>
-Q1: The relationship between two variables x and y is given by x + py + q = 0 and is shown in the figure. Find the values of p and q.
+Q1: The relationship between two variables $x$ and $y$ is given by $x + py + q = 0$ and is shown in the figure. Find the values of $p$ and $q$.
 [SVG_START]
 <svg viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
   <rect width="420" height="220" fill="#ffffff"/>
@@ -1252,20 +1306,20 @@ Q1: The relationship between two variables x and y is given by x + py + q = 0 an
   <text x="180" y="30" font-size="14" font-style="italic" font-weight="bold">y</text>
 </svg>
 [SVG_END]
-A) p = -1/2 ; q = 2
-B) p = 2 ; q = -2
-C) p = 1/2 ; q = 4
-D) p = 2 ; q = 4
+A) $p = -\\frac{1}{2} \\; ; \\; q = 2$
+B) $p = 2 \\; ; \\; q = -2$
+C) $p = \\frac{1}{2} \\; ; \\; q = 4$
+D) $p = 2 \\; ; \\; q = 4$
 Answer: A
-Explanation: The line passes through (-2, 0) and (0, 4). Substituting (-2, 0) gives -2 + q = 0 => q = 2. Substituting (0, 4) gives 4p + 2 = 0 => p = -1/2.
+Explanation: The line passes through $(-2, 0)$ and $(0, 4)$. Substituting $(-2, 0)$ gives $-2 + q = 0 \\Rightarrow q = 2$. Substituting $(0, 4)$ gives $4p + 2 = 0 \\Rightarrow p = -\\frac{1}{2}$.
 ---
-Q2: An ideal 12 V DC voltage source is connected in series with a 4 Ohm resistor and a parallel combination of 6 Ohm and 3 Ohm resistors. Find the total current supplied by the source (in Amperes).
-A) 1.0 A
-B) 2.0 A
-C) 3.0 A
-D) 4.0 A
-Answer: B
-Explanation: Parallel combination R_p = (6 * 3)/(6 + 3) = 2 Ohm. Total R = 4 + 2 = 6 Ohm. Current I = 12 / 6 = 2.0 A.
+Q2: The impulse response of a causal LTI system is given by $h(t) = 4e^{-2t}u(t)$. The steady-state output for an input $x(t) = 5\\cos(2t)$ is _____.
+A) $5\\sqrt{2}\\cos(2t - 45^\\circ)$
+B) $10e^{-2t}\\cos(2t)$
+C) $\\frac{5}{\\sqrt{2}}\\cos(2t + 45^\\circ)$
+D) $20\\cos(2t - 90^\\circ)$
+Answer: A
+Explanation: Frequency response $H(j\\omega) = \\frac{4}{2 + j\\omega}$. At $\\omega = 2\\text{ rad/s}$, $H(j2) = \\frac{4}{2 + j2} = \\sqrt{2}\\angle -45^\\circ$. Steady-state output $y_{ss}(t) = 5\\sqrt{2}\\cos(2t - 45^\\circ)$.
 ---
 </FEW_SHOT_EXAMPLES>
 
@@ -1277,7 +1331,7 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
       navigator.clipboard.writeText(promptText);
       const btn = document.getElementById("copyPromptBtn");
       const oldText = btn.textContent;
-      btn.textContent = "✓ Copied Engineered Prompt to Clipboard!";
+      btn.textContent = "✓ Copied LaTeX + SVG Engineered Prompt!";
       setTimeout(() => (btn.textContent = oldText), 2500);
     };
 
@@ -1295,17 +1349,23 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
 
       if (!document.getElementById("paperTitleInput").value) {
         const existingInSec = allAttempts.filter(a => a.section.toLowerCase() === "gate ee 2025").length;
-        document.getElementById("paperTitleInput").value = `GATE EE Demo Paper ${existingInSec + 1}`;
+        document.getElementById("paperTitleInput").value = `GATE EE Math & Diagrams ${existingInSec + 1}`;
       }
 
-      document.getElementById("rawTextInput").value = `Q1: The relationship between two variables x and y is given by x + py + q = 0 and is shown in the figure. Find the values of p and q.
+      document.getElementById("rawTextInput").value = `Q1: Kavya _____ go to work yesterday as she _____ feeling well. Select the most appropriate option to complete the above sentence.
+A) didn't; isn't
+B) wouldn't; wasn't
+C) wasn't; wasn't
+D) couldn't; wasn't
+Answer: D
+Explanation: "couldn't" indicates past inability and "wasn't" matches the past tense context ("yesterday").
+---
+Q2: The relationship between two variables $x$ and $y$ is given by $x + py + q = 0$ and is shown in the figure. Find the values of $p$ and $q$.
 [SVG_START]
 <svg viewBox="0 0 440 220" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
   <rect width="440" height="220" fill="#f8fafc" rx="8"/>
-  <!-- Grid lines -->
   <line x1="60" y1="170" x2="400" y2="170" stroke="#334155" stroke-width="2"/>
   <line x1="220" y1="205" x2="220" y2="20" stroke="#334155" stroke-width="2"/>
-  <!-- Plotted Line passing through (-2,0) and (0,4) -->
   <line x1="140" y1="170" x2="340" y2="45" stroke="#dc2626" stroke-width="3"/>
   <circle cx="140" cy="170" r="4.5" fill="#1e293b"/>
   <text x="120" y="192" font-size="12" font-weight="bold" fill="#1e293b">(-2, 0)</text>
@@ -1317,14 +1377,22 @@ Now process the attached document following <CRITICAL_CONSTRAINTS> and <OUTPUT_S
   <text x="200" y="30" font-size="14" font-style="italic" font-weight="bold" fill="#0f172a">y</text>
 </svg>
 [SVG_END]
-A) p = -1/2 ; q = 2
-B) p = 2 ; q = -2
-C) p = 1/2 ; q = 4
-D) p = 2 ; q = 4
+A) $p = -\\frac{1}{2} \\; ; \\; q = 2$
+B) $p = 2 \\; ; \\; q = -2$
+C) $p = \\frac{1}{2} \\; ; \\; q = 4$
+D) $p = 2 \\; ; \\; q = 4$
 Answer: A
-Explanation: The line passes through (-2, 0) and (0, 4). Substituting (-2, 0) into x + py + q = 0 gives -2 + q = 0 => q = 2. Substituting (0, 4) gives 0 + 4p + 2 = 0 => p = -1/2.
+Explanation: The line passes through $(-2, 0)$ and $(0, 4)$. Substituting $(-2, 0)$ into $x + py + q = 0$ gives $-2 + q = 0 \\Rightarrow q = 2$. Substituting $(0, 4)$ gives $0 + 4p + 2 = 0 \\Rightarrow p = -\\frac{1}{2}$.
 ---
-Q2: Each row of Column-I has three items and each item is represented by a circle in Column-II. Identify the option that has the most appropriate match between Column-I and Column-II:
+Q3: In a source-free series $RLC$ circuit with $R = 4\\text{ }\\Omega$, $L = 1\\text{ H}$, and $C = \\frac{1}{8}\\text{ F}$, the natural response current $i(t)$ for $t \\ge 0$ is proportional to _____.
+A) $e^{-2t}\\cos(2t + \\phi)$
+B) $e^{-4t}\\cos(\\sqrt{8}t + \\phi)$
+C) $t \\cdot e^{-2t}$
+D) $e^{-2t} + e^{-4t}$
+Answer: A
+Explanation: Characteristic equation: $s^2 + \\frac{R}{L}s + \\frac{1}{LC} = s^2 + 4s + 8 = 0$. The roots are $s_{1,2} = -2 \\pm j2$, giving an underdamped response proportional to $e^{-2t}\\cos(2t + \\phi)$.
+---
+Q4: Each row of Column-I has three items and each item is represented by a circle in Column-II. Identify the option that has the most appropriate match:
 (1) Animals, Zebra, Giraffe
 (2) Director, Producer, Actor
 (3) Word, Sentence, Novel
@@ -1332,22 +1400,18 @@ Q2: Each row of Column-I has three items and each item is represented by a circl
 [SVG_START]
 <svg viewBox="0 0 520 210" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
   <rect width="520" height="210" fill="#f8fafc" rx="8"/>
-  <!-- (P) Concentric Circles -->
   <text x="55" y="30" font-size="13" font-weight="bold" fill="#1e293b">(P)</text>
   <circle cx="65" cy="115" r="52" fill="none" stroke="#2563eb" stroke-width="2"/>
   <circle cx="65" cy="115" r="34" fill="none" stroke="#2563eb" stroke-width="2"/>
   <circle cx="65" cy="115" r="16" fill="none" stroke="#2563eb" stroke-width="2"/>
-  <!-- (Q) Two intersecting circles inside one outer circle -->
   <text x="180" y="30" font-size="13" font-weight="bold" fill="#1e293b">(Q)</text>
   <circle cx="190" cy="115" r="52" fill="none" stroke="#059669" stroke-width="2"/>
   <circle cx="176" cy="115" r="22" fill="none" stroke="#059669" stroke-width="2"/>
   <circle cx="204" cy="115" r="22" fill="none" stroke="#059669" stroke-width="2"/>
-  <!-- (R) Two separate circles inside one outer circle -->
   <text x="310" y="30" font-size="13" font-weight="bold" fill="#1e293b">(R)</text>
   <circle cx="320" cy="115" r="52" fill="none" stroke="#d97706" stroke-width="2"/>
   <circle cx="298" cy="115" r="18" fill="none" stroke="#d97706" stroke-width="2"/>
   <circle cx="342" cy="115" r="18" fill="none" stroke="#d97706" stroke-width="2"/>
-  <!-- (S) Three mutually intersecting circles -->
   <text x="440" y="30" font-size="13" font-weight="bold" fill="#1e293b">(S)</text>
   <circle cx="435" cy="100" r="28" fill="none" stroke="#dc2626" stroke-width="2"/>
   <circle cx="465" cy="100" r="28" fill="none" stroke="#dc2626" stroke-width="2"/>
@@ -1359,66 +1423,7 @@ B) (1)-(Q), (2)-(S), (3)-(P), (4)-(R)
 C) (1)-(R), (2)-(Q), (3)-(P), (4)-(S)
 D) (1)-(P), (2)-(S), (3)-(R), (4)-(Q)
 Answer: A
-Explanation: Zebra and Giraffe are disjoint animals -> (R). Director, Producer, Actor can overlap -> (S). Words make Sentences which make Novels -> concentric (P). Pianists and Guitarists can overlap inside Instrumentalists -> (Q).
----
-Q3: In the DC network shown below, find the current I supplied by the 24 V source and the voltage at node V_A.
-[SVG_START]
-<svg viewBox="0 0 520 220" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
-  <rect width="520" height="220" fill="#f8fafc" rx="8"/>
-  <line x1="70" y1="50" x2="150" y2="50" stroke="#0f172a" stroke-width="2.5"/>
-  <line x1="230" y1="50" x2="430" y2="50" stroke="#0f172a" stroke-width="2.5"/>
-  <line x1="70" y1="175" x2="430" y2="175" stroke="#0f172a" stroke-width="2.5"/>
-  <line x1="70" y1="50" x2="70" y2="85" stroke="#0f172a" stroke-width="2.5"/>
-  <line x1="70" y1="135" x2="70" y2="175" stroke="#0f172a" stroke-width="2.5"/>
-  <circle cx="70" cy="110" r="24" fill="#ffffff" stroke="#2563eb" stroke-width="2.5"/>
-  <text x="64" y="106" font-size="14" font-weight="bold" fill="#1e40af">+</text>
-  <text x="66" y="124" font-size="16" font-weight="bold" fill="#1e40af">-</text>
-  <text x="15" y="115" font-size="14" font-weight="bold" fill="#1e3a8a">24 V</text>
-  <polygon points="118,45 130,50 118,55" fill="#dc2626"/>
-  <text x="108" y="38" font-size="13" font-weight="bold" fill="#dc2626">I = ?</text>
-  <rect x="150" y="36" width="80" height="28" fill="#e0e7ff" stroke="#4338ca" stroke-width="2" rx="4"/>
-  <text x="166" y="55" font-size="13" font-weight="bold" fill="#312e81">R1 = 4 Ω</text>
-  <circle cx="290" cy="50" r="4.5" fill="#dc2626"/>
-  <text x="275" y="33" font-size="13" font-weight="bold" fill="#dc2626">V_A</text>
-  <line x1="290" y1="50" x2="290" y2="82" stroke="#0f172a" stroke-width="2.5"/>
-  <rect x="260" y="82" width="60" height="56" fill="#dcfce7" stroke="#15803d" stroke-width="2" rx="4"/>
-  <text x="272" y="115" font-size="13" font-weight="bold" fill="#14532d">12 Ω</text>
-  <line x1="290" y1="138" x2="290" y2="175" stroke="#0f172a" stroke-width="2.5"/>
-  <line x1="430" y1="50" x2="430" y2="82" stroke="#0f172a" stroke-width="2.5"/>
-  <rect x="400" y="82" width="60" height="56" fill="#dcfce7" stroke="#15803d" stroke-width="2" rx="4"/>
-  <text x="416" y="115" font-size="13" font-weight="bold" fill="#14532d">6 Ω</text>
-  <line x1="430" y1="138" x2="430" y2="175" stroke="#0f172a" stroke-width="2.5"/>
-</svg>
-[SVG_END]
-A) I = 2 A, V_A = 16 V
-B) I = 3 A, V_A = 12 V
-C) I = 4 A, V_A = 8 V
-D) I = 6 A, V_A = 12 V
-Answer: B
-Explanation: 12 Ω || 6 Ω = 4 Ω. Total R = 4 + 4 = 8 Ω. I = 24 / 8 = 3 A. V_A = 3 * 4 = 12 V.
----
-Q4: In the AC Phasor & Impedance Diagram shown below, determine the power factor (cos φ) and nature of the circuit.
-[SVG_START]
-<svg viewBox="0 0 480 210" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
-  <rect width="480" height="210" fill="#f8fafc" rx="8"/>
-  <line x1="60" y1="170" x2="410" y2="170" stroke="#64748b" stroke-width="2"/>
-  <line x1="60" y1="170" x2="60" y2="25" stroke="#64748b" stroke-width="2"/>
-  <line x1="60" y1="170" x2="290" y2="170" stroke="#0284c7" stroke-width="4"/>
-  <text x="155" y="192" font-size="13" font-weight="bold" fill="#0369a1">R = 8 Ω (V_R)</text>
-  <line x1="290" y1="170" x2="290" y2="55" stroke="#16a34a" stroke-width="3" stroke-dasharray="5,4"/>
-  <text x="302" y="118" font-size="13" font-weight="bold" fill="#15803d">X_L = 6 Ω (V_L)</text>
-  <line x1="60" y1="170" x2="290" y2="55" stroke="#dc2626" stroke-width="3.5"/>
-  <text x="135" y="95" font-size="14" font-weight="bold" fill="#b91c1c">|Z| = 10 Ω</text>
-  <path d="M 125 170 A 65 65 0 0 0 118 141" fill="none" stroke="#4f46e5" stroke-width="2.5"/>
-  <text x="132" y="158" font-size="13" font-weight="bold" fill="#4338ca">φ = 36.87°</text>
-</svg>
-[SVG_END]
-A) 0.6 Lagging
-B) 0.8 Lagging
-C) 0.8 Leading
-D) 0.75 Lagging
-Answer: B
-Explanation: Power factor cos φ = R / |Z| = 8 / 10 = 0.8 Lagging (inductive reactance).`;
+Explanation: Zebra and Giraffe are disjoint animals -> (R). Director, Producer, Actor can overlap -> (S). Words make Sentences which make Novels -> concentric (P). Pianists and Guitarists can overlap inside Instrumentalists -> (Q).`;
 
       updateLiveParseCount();
     };
@@ -1511,7 +1516,8 @@ Explanation: Power factor cos φ = R / |Z| = 8 / 10 = 0.8 Lagging (inductive rea
 
       document.getElementById("liveQuestionNumber").textContent =
         `Question ${idx + 1} of ${total}`;
-      document.getElementById("liveQuestionText").textContent = qObj.question;
+      document.getElementById("liveQuestionText").innerHTML =
+        formatQuestionAndOptionHtml(qObj.question);
 
       // 1. Render Vector SVG Diagram if present
       const svgWindow = document.getElementById("liveSvgWindow");
@@ -1560,7 +1566,7 @@ Explanation: Power factor cos φ = R / |Z| = 8 / 10 = 0.8 Lagging (inductive rea
       qObj.options.forEach((optText, oIdx) => {
         const isSelected = currentExam.responses[idx] === oIdx;
         const btn = document.createElement("button");
-        btn.className = `w-full text-left p-3.5 rounded-xl border text-sm transition flex items-start gap-3 ${
+        btn.className = `w-full text-left p-3.5 rounded-xl border text-sm transition flex items-center gap-3 ${
           isSelected
             ? "bg-indigo-50 border-indigo-600 text-indigo-950 font-semibold ring-1 ring-indigo-600"
             : "bg-white border-slate-200 hover:bg-slate-50 text-slate-800"
@@ -1573,12 +1579,13 @@ Explanation: Power factor cos φ = R / |Z| = 8 / 10 = 0.8 Lagging (inductive rea
           <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
             isSelected ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600"
           }">${letters[oIdx]}</span>
-          <span class="leading-snug">${escapeHtml(optText)}</span>
+          <span class="leading-snug">${formatQuestionAndOptionHtml(optText)}</span>
         `;
         optsContainer.appendChild(btn);
       });
 
       renderQuestionPalette();
+      triggerMathJaxRender(document.getElementById("viewExam"));
     }
 
     function renderQuestionPalette() {
@@ -1999,7 +2006,7 @@ Explanation: Power factor cos φ = R / |Z| = 8 / 10 = 0.8 Lagging (inductive rea
             let style = "text-slate-600";
             if (oIdx === q.answer) style = "text-emerald-700 font-bold";
             else if (oIdx === userAns && userAns !== q.answer) style = "text-rose-600 line-through font-semibold";
-            return `<div class="text-xs ${style}">${letters[oIdx]}) ${escapeHtml(opt)}</div>`;
+            return `<div class="text-xs ${style}">${letters[oIdx]}) ${formatQuestionAndOptionHtml(opt)}</div>`;
           })
           .join("");
 
@@ -2023,13 +2030,13 @@ Explanation: Power factor cos φ = R / |Z| = 8 / 10 = 0.8 Lagging (inductive rea
             <span class="text-xs font-bold text-slate-500">Question ${idx + 1}</span>
             ${statusBadge}
           </div>
-          <p class="text-sm font-semibold text-slate-900 whitespace-pre-line">${escapeHtml(q.question)}</p>
+          <p class="text-sm font-semibold text-slate-900 whitespace-pre-line">${formatQuestionAndOptionHtml(q.question)}</p>
           ${svgHtml}
           ${diagramHtml}
           ${imgHtml}
           <div class="space-y-1 pl-2 border-l-2 border-slate-200">${optsHtml}</div>
           <p class="text-xs text-indigo-900 bg-indigo-50 p-2.5 rounded-lg border border-indigo-100">
-            <strong>Explanation:</strong> ${escapeHtml(q.explanation || "No explanation provided.")}
+            <strong>Explanation:</strong> ${formatQuestionAndOptionHtml(q.explanation || "No explanation provided.")}
           </p>
         `;
         listEl.appendChild(card);
@@ -2037,6 +2044,7 @@ Explanation: Power factor cos φ = R / |Z| = 8 / 10 = 0.8 Lagging (inductive rea
 
       const panel = document.getElementById("paperReviewPanel");
       panel.classList.remove("hidden");
+      triggerMathJaxRender(panel);
       panel.scrollIntoView({ behavior: "smooth" });
     };
 
@@ -2090,4 +2098,4 @@ Explanation: Power factor cos φ = R / |Z| = 8 / 10 = 0.8 Lagging (inductive rea
     }
   </script>
 </body>
-</html>
+  </html>
