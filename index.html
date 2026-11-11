@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Mock Test by Srujan — Exam & Section Progress Tracker</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js for Section-Wise Progression & Comparison Graphs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- PDF.js for Direct Formatted PDF Text Extraction -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <style>
+    /* Ensure rendered SVG diagrams scale responsively and text labels stay sharp */
+    .svg-diagram-container svg {
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto;
+      display: block;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="bg-indigo-950 text-white shadow-md sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="showWelcomeScreen()">
+        <div class="bg-indigo-600 text-white font-bold px-3 py-1.5 rounded-lg text-lg tracking-tight">
+          MockTrack
+        </div>
+        <div>
+          <h1 class="font-bold text-base sm:text-lg leading-tight">Free Mock Test by Srujan</h1>
+          <p class="text-xs text-indigo-300">Custom Exam Sections & Cloud Progress Tracker</p>
+        </div>
+      </div>
+
+      <!-- Navigation & Auth Controls -->
+      <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+        <button onclick="showWelcomeScreen()" id="navWelcomeBtn" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-indigo-700 text-white transition">
+          Home & Guide
+        </button>
+        <button onclick="switchMainTab('create')" id="navCreateBtn" class="px-3 py-1.5 rounded-lg text-sm font-medium text-indigo-200 hover:bg-indigo-800 transition">
+          + New Mock Test
+        </button>
+        <button onclick="switchMainTab('dashboard')" id="navDashBtn" class="px-3 py-1.5 rounded-lg text-sm font-medium text-indigo-200 hover:bg-indigo-800 transition">
+          Section Analytics
+        </button>
+
+        <div class="h-5 w-px bg-indigo-800 mx-1"></div>
+
+        <!-- Auth Status Area -->
+        <div id="authContainer" class="flex items-center gap-2">
+          <span id="userBadge" class="text-xs bg-indigo-900 border border-indigo-700 px-2.5 py-1 rounded-full text-indigo-200">
+            Local Browser Mode
+          </span>
+          <button id="googleLoginBtn" onclick="handleGoogleSignIn()" class="bg-white text-slate-900 hover:bg-slate-100 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm transition flex items-center gap-1.5">
+            <span>Sign in with Google</span>
+          </button>
+          <button id="logoutBtn" onclick="handleSignOut()" class="hidden bg-rose-600 hover:bg-rose-500 text-white px-2.5 py-1.5 rounded-lg text-xs font-semibold transition">
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-7xl mx-auto w-full px-4 py-6 flex-1">
+
+    <!-- ==========================================
+         VIEW 0: WELCOME & HOW-TO-USE OPENING PAGE
+         ========================================== -->
+    <section id="viewWelcome" class="space-y-8">
+      <div class="bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 text-white rounded-2xl p-6 sm:p-10 shadow-lg">
+        <div class="max-w-3xl space-y-4">
+          <span class="inline-block bg-indigo-500/30 border border-indigo-400/40 text-indigo-100 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full">
+            Welcome to Your Personal Exam Portal
+          </span>
+          <h2 class="text-2xl sm:text-4xl font-extrabold leading-tight">
+            Turn Any Question PDF into an Interactive Mock Test & Track Your Progress
+          </h2>
+          <p class="text-sm sm:text-base text-indigo-100/90 leading-relaxed">
+            This platform lets you convert any question-and-answer PDF or text into a real timed exam interface with <strong>100% Vector &amp; Text Diagram Recreation</strong> (circuits, phasors, graphs, Venn diagrams, geometry figures, and tables), organize your attempts into separate exam folders (like <strong>UIIC AO</strong>, <strong>GATE</strong>, <strong>ESE</strong>, <strong>TGPSC</strong>), and visualize your score improvement over time.
+          </p>
+          <div class="pt-2 flex flex-wrap gap-3">
+            <button
+              onclick="proceedFromWelcome()"
+              class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-6 py-3 rounded-xl text-sm shadow-md transition"
+            >
+              Proceed to App &rarr;
+            </button>
+            <button
+              onclick="switchMainTab('dashboard')"
+              class="bg-white/10 hover:bg-white/20 border border-white/25 text-white font-semibold px-5 py-3 rounded-xl text-sm transition"
+            >
+              View My Section Analytics
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- How to Use Properly: 4-Step Guide -->
+      <div>
+        <div class="mb-4">
+          <h3 class="text-lg font-bold text-slate-900">How to Use This Website Properly</h3>
+          <p class="text-xs text-slate-500">Follow these simple steps to create error-free mock tests with full diagrams and track your marks.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 font-extrabold text-sm flex items-center justify-center mb-3">1</div>
+              <h4 class="font-bold text-sm text-slate-900 mb-1.5">Sign In to Sync Progress</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">Click <strong>Sign in with Google</strong> in the top bar so your exam sections and paper attempts sync across devices.</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-indigo-600 font-semibold">Works offline too!</div>
+          </div>
+
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 font-extrabold text-sm flex items-center justify-center mb-3">2</div>
+              <h4 class="font-bold text-sm text-slate-900 mb-1.5">Universal Diagram AI Prompt</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">Copy our strict AI prompt and upload your PDF to Gemini/ChatGPT. The AI recreates every circuit, graph, or figure using <code>[SVG_START]</code> or <code>[DIAGRAM_START]</code> code blocks!</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-emerald-600 font-semibold">Captures curves, circles &amp; text labels</div>
+          </div>
+
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 font-extrabold text-sm flex items-center justify-center mb-3">3</div>
+              <h4 class="font-bold text-sm text-slate-900 mb-1.5">Organize in Exam Sections</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">Select a pre-existing exam section from the dropdown or choose <strong>+ Create New Section...</strong> to type a custom name manually.</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-indigo-600 font-semibold">Multiple papers per section</div>
+          </div>
+
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 font-extrabold text-sm flex items-center justify-center mb-3">4</div>
+              <h4 class="font-bold text-sm text-slate-900 mb-1.5">Track Progression Graphs</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">Open <strong>Section Analytics</strong> to review isolated score progression lines and marks comparison charts for each exam.</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-indigo-600 font-semibold">Detailed answer key reviews</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         VIEW 1: CREATE & LAUNCH NEW MOCK TEST
+         ========================================== -->
+    <section id="viewCreate" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Left Column: Test Metadata & AI Prompt Helper -->
+        <div class="space-y-6">
+          <!-- Step 1: Categorize Exam Section & Paper -->
+          <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+            <h2 class="text-base font-bold text-slate-900 mb-1">1. Exam Section & Paper Details</h2>
+            <p class="text-xs text-slate-500 mb-4">
+              Select or create an exam section. You can attempt multiple papers under each section.
+            </p>
+
+            <div class="space-y-3">
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+                  Exam Section / Folder *
+                </label>
+                <select
+                  id="examSectionDropdown"
+                  onchange="handleSectionDropdownChange()"
+                  class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none mb-2"
+                >
+                  <option value="">-- Select Exam Section --</option>
+                  <option value="__NEW__">+ Create New Section...</option>
+                </select>
+
+                <input
+                  type="text"
+                  id="examSectionManualInput"
+                  placeholder="Type new section name (e.g., UIIC AO, GATE)"
+                  class="hidden w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+                  Paper Name / Number *
+                </label>
+                <input
+                  type="text"
+                  id="paperTitleInput"
+                  placeholder="e.g., Prelims Mock Paper 1"
+                  class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                />
+              </div>
+
+              <div class="grid grid-cols-3 gap-2 pt-1">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Duration (Min)</label>
+                  <input type="number" id="durationInput" value="30" min="1" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Marks / Correct</label>
+                  <input type="number" id="positiveMarksInput" value="1" step="0.25" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Negative Mark</label>
+                  <input type="number" id="negativeMarksInput" value="0.25" step="0.05" min="0" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-sm" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Copy AI Strict Format Prompt -->
+          <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-200 space-y-3">
+            <div class="flex items-center justify-between">
+              <h2 class="text-sm font-bold text-indigo-950">2. Convert Any PDF via Free AI</h2>
+              <span class="text-[11px] bg-emerald-200 text-emerald-950 font-bold px-2 py-0.5 rounded">SVG + ASCII Mode</span>
+            </div>
+            <p class="text-xs text-indigo-900/80 leading-relaxed">
+              Upload your question PDF to Gemini or ChatGPT with this prompt. It instructs the AI to recreate <strong>every kind of diagram</strong> (circuits, curves, circles, Venn diagrams, phasors, graphs, and tables) with all text labels inside <code>[SVG_START]...[SVG_END]</code> or <code>[DIAGRAM_START]...[DIAGRAM_END]</code>!
+            </p>
+            <button
+              onclick="copyStrictAiPrompt()"
+              id="copyPromptBtn"
+              class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-3 rounded-lg text-xs shadow-sm transition"
+            >
+              Copy Universal Diagram AI Prompt
+            </button>
+          </div>
+        </div>
+
+        <!-- Right 2 Columns: Strict Text Input or File Upload -->
+        <div class="lg:col-span-2 bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <div>
+              <h2 class="text-base font-bold text-slate-900">3. Paste Strict Formatted Questions or Upload File</h2>
+              <p class="text-xs text-slate-500">
+                Automatically renders <code>[SVG_START]...[SVG_END]</code> vector graphics and <code>[DIAGRAM_START]...[DIAGRAM_END]</code> text schematics.
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-300 transition">
+                Upload .TXT or .PDF
+                <input type="file" id="fileUploadInput" accept=".txt,.pdf" class="hidden" onchange="handleFileUpload(event)" />
+              </label>
+              <button onclick="loadDemoQuestions()" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                Load Demo Paper (Circuit + Graph + Venn)
+              </button>
+            </div>
+          </div>
+
+          <textarea
+            id="rawTextInput"
+            rows="13"
+            class="w-full flex-1 p-3.5 rounded-lg border border-slate-300 font-mono text-xs leading-relaxed focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+            placeholder="Paste the AI output here... Questions with [SVG_START]...[SVG_END] or [DIAGRAM_START]...[DIAGRAM_END] will automatically display their full visual diagrams in the exam window!"
+          ></textarea>
+
+          <div id="parseErrorBox" class="hidden mt-3 p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium"></div>
+
+          <div class="mt-4 flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
+            <span id="uploadStatusText" class="text-xs text-slate-500">
+              Supports Vector SVG Diagrams, ASCII Text Schematics, and Ctrl+V Image Paste.
+            </span>
+            <button
+              onclick="parseAndStartExam()"
+              class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2.5 rounded-lg text-sm shadow transition"
+            >
+              Start Mock Test Now
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================
+         VIEW 2: LIVE MOCK TEST INTERFACE
+         ========================================== -->
+    <section id="viewExam" class="hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <!-- Main Question Area -->
+        <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between min-h-[480px]">
+          <div>
+            <!-- Exam Header Info -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-4 mb-4 border-b border-slate-200">
+              <div>
+                <span id="liveExamBadge" class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-indigo-100 text-indigo-800"></span>
+                <h2 id="livePaperTitle" class="text-lg font-bold text-slate-900 mt-1"></h2>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="text-right">
+                  <span class="block text-[11px] uppercase text-slate-400 font-semibold">Time Remaining</span>
+                  <span id="liveTimerDisplay" class="font-mono text-lg font-bold text-indigo-700">00:00</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Question Counter & Fallback Paste Button -->
+            <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span id="liveQuestionNumber" class="text-sm font-bold text-slate-500">Question 1 of 10</span>
+                <span id="liveMarkingInfo" class="text-xs font-medium text-slate-500 bg-slate-100 px-2.5 py-1 rounded"></span>
+              </div>
+
+              <!-- Optional Manual Image Upload / Paste Fallback -->
+              <div class="flex items-center gap-2">
+                <label class="cursor-pointer inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-indigo-50 text-slate-600 hover:text-indigo-700 border border-slate-200 transition" title="You can also upload or press Ctrl+V to paste a screenshot">
+                  <span>&#128247; Paste/Upload Snip (Ctrl+V)</span>
+                  <input type="file" accept="image/*" class="hidden" onchange="handleQuestionImageUpload(event)" />
+                </label>
+              </div>
+            </div>
+
+            <!-- Question Text -->
+            <div id="liveQuestionText" class="text-base font-medium text-slate-900 mb-4 whitespace-pre-line leading-relaxed"></div>
+
+            <!-- 1. DEDICATED VECTOR SVG DIAGRAM WINDOW (For Circuits, Graphs, Venn, Geometry) -->
+            <div id="liveSvgWindow" class="hidden mb-6 rounded-xl overflow-hidden border-2 border-indigo-200 bg-white shadow-sm">
+              <div class="bg-indigo-50/80 px-3.5 py-1.5 border-b border-indigo-100 flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-800 flex items-center gap-1.5">
+                  <span>&#128208;</span> Recreated Vector Figure &amp; Labels
+                </span>
+                <span class="text-[10px] text-indigo-500 font-semibold">High-Precision SVG View</span>
+              </div>
+              <div id="liveSvgContainer" class="svg-diagram-container p-4 overflow-x-auto bg-white text-center"></div>
+            </div>
+
+            <!-- 2. DEDICATED ASCII / TEXT DIAGRAM WINDOW (For Monospace Text Schematics) -->
+            <div id="liveDiagramWindow" class="hidden mb-6 rounded-xl overflow-hidden border-2 border-indigo-200 bg-slate-900 text-emerald-300 shadow-inner">
+              <div class="bg-slate-800 px-3.5 py-1.5 border-b border-slate-700 flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-300 flex items-center gap-1.5">
+                  <span>&#9638;</span> Recreated Text Schematic
+                </span>
+                <span class="text-[10px] text-slate-400 font-mono">Monospace View</span>
+              </div>
+              <pre id="liveDiagramPre" class="p-4 text-xs sm:text-sm font-mono leading-snug overflow-x-auto whitespace-pre select-all"></pre>
+            </div>
+
+            <!-- 3. OPTIONAL PASTED SCREENSHOT IMAGE CONTAINER -->
+            <div id="liveQuestionImageContainer" class="hidden mb-6 p-3 bg-slate-50 rounded-xl border border-slate-200 text-center">
+              <img id="liveQuestionImage" src="" alt="Question Diagram" class="max-h-72 mx-auto rounded-lg shadow-xs object-contain" />
+              <button onclick="removeCurrentQuestionImage()" class="mt-2 text-[11px] text-rose-600 hover:underline font-semibold">Remove Pasted Snip</button>
+            </div>
+
+            <!-- Options Container -->
+            <div id="liveOptionsContainer" class="space-y-3"></div>
+          </div>
+
+          <!-- Bottom Navigation Buttons -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-6 mt-6 border-t border-slate-200">
+            <div class="flex items-center gap-2">
+              <button onclick="clearCurrentResponse()" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-semibold text-slate-600 hover:bg-slate-100">
+                Clear Response
+              </button>
+              <button onclick="toggleMarkForReview()" id="markReviewBtn" class="px-3 py-2 rounded-lg border border-amber-300 bg-amber-50 text-xs font-semibold text-amber-800 hover:bg-amber-100">
+                Mark for Review
+              </button>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button onclick="navigateQuestion(-1)" id="prevQBtn" class="px-4 py-2 rounded-lg border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-100">
+                Previous
+              </button>
+              <button onclick="handleSaveAndNext()" id="nextQBtn" class="px-5 py-2 rounded-lg bg-indigo-600 text-xs font-bold text-white hover:bg-indigo-700">
+                Save & Next
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question Palette Sidebar -->
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+          <div>
+            <h3 class="text-sm font-bold text-slate-900 mb-3">Question Palette</h3>
+            <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-600 mb-4 pb-3 border-b border-slate-100">
+              <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-emerald-600 inline-block"></span> Answered</div>
+              <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-amber-500 inline-block"></span> Marked Review</div>
+              <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-slate-200 inline-block"></span> Unanswered</div>
+              <div class="flex items-center gap-1.5"><span class="text-indigo-600 font-bold">&#9638;</span> Has Diagram</div>
+            </div>
+            <div id="questionPaletteGrid" class="grid grid-cols-5 gap-2 max-h-64 overflow-y-auto pr-1"></div>
+          </div>
+
+          <button
+            onclick="openLastQuestionModal(false)"
+            class="w-full mt-6 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-sm shadow transition"
+          >
+            Submit Paper
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         VIEW 3: SECTION-WISE ANALYTICS & PROGRESS
+         ========================================== -->
+    <section id="viewDashboard" class="hidden space-y-6">
+
+      <!-- Top Bar: Section Folder Selector & Backup Actions -->
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900">Exam Section Folders & Progression Analytics</h2>
+            <p class="text-xs text-slate-500">
+              Click any exam section tab below to isolate its papers, or click <strong>Edit Section Name</strong> to rename a folder.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <button onclick="openEditSectionModal()" id="editSectionTopBtn" class="px-3 py-1.5 rounded-lg bg-indigo-50 border border-indigo-200 text-xs font-bold text-indigo-700 hover:bg-indigo-100 transition">
+              &#9998; Edit Section Name
+            </button>
+            <button onclick="exportBackupJson()" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100">
+              Export Backup (.json)
+            </button>
+            <label class="cursor-pointer px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100">
+              Import Backup
+              <input type="file" accept=".json" class="hidden" onchange="importBackupJson(event)" />
+            </label>
+          </div>
+        </div>
+
+        <!-- Dynamic Section Folder Tabs -->
+        <div id="sectionTabsContainer" class="flex items-center gap-2 flex-wrap pt-2 border-t border-slate-100"></div>
+      </div>
+
+      <!-- Summary KPI Cards for Selected Exam Section -->
+      <div id="dashboardContentArea" class="space-y-6">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between gap-1">
+              <span class="text-xs font-semibold text-slate-400 uppercase">Selected Section</span>
+              <button onclick="openEditSectionModal()" title="Edit Section Name" class="text-xs text-indigo-600 hover:text-indigo-800 font-bold">
+                Edit
+              </button>
+            </div>
+            <p id="statSectionName" class="text-lg font-bold text-indigo-700 mt-1 truncate">—</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+            <span class="text-xs font-semibold text-slate-400 uppercase">Papers Attempted</span>
+            <p id="statPapersCount" class="text-2xl font-bold text-slate-900 mt-1">0</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+            <span class="text-xs font-semibold text-slate-400 uppercase">Average Percentage</span>
+            <p id="statAvgPercent" class="text-2xl font-bold text-emerald-600 mt-1">0%</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+            <span class="text-xs font-semibold text-slate-400 uppercase">Best Paper Score</span>
+            <p id="statBestPercent" class="text-2xl font-bold text-amber-600 mt-1">0%</p>
+          </div>
+        </div>
+
+        <!-- Progression & Marks Comparison Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-900 mb-1">Percentage Progression Across Papers</h3>
+            <p class="text-xs text-slate-500 mb-4">Tracks your percentage improvement chronologically in this exam section.</p>
+            <div class="h-64">
+              <canvas id="progressionLineChart"></canvas>
+            </div>
+          </div>
+
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-900 mb-1">Paper-by-Paper Marks & Accuracy Comparison</h3>
+            <p class="text-xs text-slate-500 mb-4">Compares marks scored vs. maximum marks for each paper in this section.</p>
+            <div class="h-64">
+              <canvas id="marksBarChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Paper History Table & Review Modal Trigger -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+          <h3 class="text-sm font-bold text-slate-900 mb-3">Attempted Papers in This Section</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="border-b border-slate-200 text-slate-500 uppercase">
+                  <th class="py-2.5 px-3">#</th>
+                  <th class="py-2.5 px-3">Paper Title</th>
+                  <th class="py-2.5 px-3">Date</th>
+                  <th class="py-2.5 px-3">Marks Scored</th>
+                  <th class="py-2.5 px-3">Percentage</th>
+                  <th class="py-2.5 px-3">Correct / Wrong / Skipped</th>
+                  <th class="py-2.5 px-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="sectionHistoryTableBody" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detailed Answer Key Review Panel -->
+      <div id="paperReviewPanel" class="hidden bg-white p-6 rounded-xl border border-indigo-200 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div>
+            <span id="reviewSectionBadge" class="text-xs font-bold uppercase px-2 py-0.5 rounded bg-indigo-100 text-indigo-800"></span>
+            <h3 id="reviewPaperTitle" class="text-base font-bold text-slate-900 mt-1">Paper Solutions & Review</h3>
+          </div>
+          <button onclick="closePaperReview()" class="text-xs font-bold text-slate-500 hover:text-slate-800 px-3 py-1 rounded border border-slate-200">
+            Close Review
+          </button>
+        </div>
+        <div id="reviewQuestionsList" class="space-y-4 max-h-[520px] overflow-y-auto pr-2"></div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- =========================================================
+       POP-UP MODAL 1: LAST QUESTION / SUBMIT OR CHECK ANSWERS
+       ========================================================= -->
+  <div id="lastQuestionModal" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+      <div class="flex items-center justify-between">
+        <span id="lastQModalBadge" class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-amber-100 text-amber-800">
+          End of Question Paper
+        </span>
+        <button onclick="closeLastQuestionModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold leading-none">&times;</button>
+      </div>
+
+      <div>
+        <h3 id="lastQModalTitle" class="text-lg font-extrabold text-slate-900">
+          You have reached the last question!
+        </h3>
+        <p id="lastQModalDesc" class="text-xs text-slate-600 mt-1 leading-relaxed">
+          Do you want to submit your test now or go back to Question 1 to check your answers?
+        </p>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+        <div>
+          <span class="block text-[10px] font-bold uppercase text-slate-400">Answered</span>
+          <span id="modalAnsweredCount" class="text-base font-extrabold text-emerald-600">0</span>
+        </div>
+        <div>
+          <span class="block text-[10px] font-bold uppercase text-slate-400">Unanswered</span>
+          <span id="modalUnansweredCount" class="text-base font-extrabold text-slate-700">0</span>
+        </div>
+        <div>
+          <span class="block text-[10px] font-bold uppercase text-slate-400">Marked Review</span>
+          <span id="modalReviewCount" class="text-base font-extrabold text-amber-600">0</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-2.5 pt-2">
+        <button
+          onclick="checkBackAnswersFromFirst()"
+          class="flex-1 px-4 py-2.5 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-800 font-bold text-xs transition"
+        >
+          &larr; Check Back Answers (Go to Q1)
+        </button>
+        <button
+          onclick="confirmSubmitFromModal()"
+          class="flex-1 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition"
+        >
+          Submit Test Now &check;
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       POP-UP MODAL 2: EDIT / RENAME EXAM SECTION NAME
+       ========================================================= -->
+  <div id="editSectionModal" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-800">
+          Rename Exam Section
+        </span>
+        <button onclick="closeEditSectionModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold leading-none">&times;</button>
+      </div>
+
+      <div>
+        <h3 class="text-base font-bold text-slate-900">Edit Section Name</h3>
+        <p class="text-xs text-slate-500 mt-1">
+          All papers under <strong id="currentSectionNameLabel" class="text-slate-800"></strong> will be moved to the new section name.
+        </p>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">New Section Name</label>
+        <input
+          type="text"
+          id="newSectionNameInput"
+          placeholder="Enter new section name..."
+          class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+        />
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button
+          onclick="closeEditSectionModal()"
+          class="px-4 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-600 hover:bg-slate-100"
+        >
+          Cancel
+        </button>
+        <button
+          onclick="saveEditedSectionName()"
+          class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow transition"
+        >
+          Save Section Name
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       POP-UP MODAL 3: INTRODUCTORY & GENERAL INFO POP-UP
+       ========================================================= -->
+  <div id="infoPopupModal" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4 text-center">
+      <div class="w-12 h-12 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center mx-auto text-xl font-bold">
+        &#128218;
+      </div>
+      <h3 id="infoPopupTitle" class="text-lg font-extrabold text-slate-900">Welcome to Exam MockTracker</h3>
+      <p id="infoPopupMessage" class="text-xs text-slate-600 leading-relaxed whitespace-pre-line text-left bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+        You can separate different exams under different sections. Under each section, you can attempt multiple papers and track your score progression separately!
+      </p>
+      <button
+        onclick="closeInfoPopup()"
+        class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow transition"
+      >
+        Get Started &rarr;
+      </button>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       APPLICATION LOGIC & FIREBASE SPARK SYNC
+       ========================================== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // ============================================================================
+    // YOUR CONFIGURED FIREBASE SPARK KEYS (free-mock-test-by-srujan)
+    // ============================================================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyBPhZrTBpQdy3iqgdliUuA9M0w-iMjBQEY",
+      authDomain: "free-mock-test-by-srujan.firebaseapp.com",
+      projectId: "free-mock-test-by-srujan",
+      storageBucket: "free-mock-test-by-srujan.firebasestorage.app",
+      messagingSenderId: "539838811940",
+      appId: "1:539838811940:web:3c0c4bd3987b9227c4edb1",
+      measurementId: "G-P68WSHTNTW"
+    };
+
+    let auth = null;
+    let db = null;
+    let currentUser = null;
+
+    try {
+      const app = initializeApp(firebaseConfig);
+      auth = getAuth(app);
+      db = getFirestore(app);
+    } catch (err) {
+      console.warn("Firebase initialization error:", err);
+    }
+
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    }
+
+    // ============================================================================
+    // STATE MANAGEMENT
+    // ============================================================================
+    const LOCAL_STORAGE_KEY = "mocktrack_attempts_v1";
+    let allAttempts = loadLocalAttempts();
+    let activeSectionFilter = "";
+    let lineChartInstance = null;
+    let barChartInstance = null;
+
+    let currentExam = {
+      section: "",
+      paperTitle: "",
+      durationMinutes: 30,
+      posMarks: 1,
+      negMarks: 0.25,
+      questions: [],
+      responses: {},
+      reviewFlags: {},
+      currentIndex: 0,
+      remainingSeconds: 0,
+      timerInterval: null
+    };
+
+    function loadLocalAttempts() {
+      try {
+        const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveLocalAttempts() {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(allAttempts));
+      refreshSectionDropdowns();
+    }
+
+    async function syncWithFirestore(direction = "merge") {
+      if (!db || !currentUser) return;
+      const userDocRef = doc(db, "users", currentUser.uid);
+
+      try {
+        if (direction === "pull" || direction === "merge") {
+          const snap = await getDoc(userDocRef);
+          if (snap.exists()) {
+            const cloudAttempts = snap.data().attempts || [];
+            const mapById = new Map();
+            [...cloudAttempts, ...allAttempts].forEach(item => mapById.set(item.id, item));
+            allAttempts = Array.from(mapById.values()).sort((a, b) => a.timestamp - b.timestamp);
+            saveLocalAttempts();
+          }
+        }
+        await setDoc(
+          userDocRef,
+          {
+            email: currentUser.email || "",
+            displayName: currentUser.displayName || "",
+            updatedAt: Date.now(),
+            attempts: allAttempts
+          },
+          { merge: true }
+        );
+      } catch (err) {
+        console.error("Cloud sync error:", err);
+      }
+    }
+
+    if (auth) {
+      onAuthStateChanged(auth, async (user) => {
+        currentUser = user;
+        const badge = document.getElementById("userBadge");
+        const loginBtn = document.getElementById("googleLoginBtn");
+        const logoutBtn = document.getElementById("logoutBtn");
+
+        if (user) {
+          badge.textContent = `Synced: ${user.displayName || user.email}`;
+          badge.className = "text-xs bg-emerald-900 border border-emerald-600 px-2.5 py-1 rounded-full text-emerald-100";
+          loginBtn.classList.add("hidden");
+          logoutBtn.classList.remove("hidden");
+          await syncWithFirestore("merge");
+          renderDashboard();
+        } else {
+          badge.textContent = "Local Browser Mode";
+          badge.className = "text-xs bg-indigo-900 border border-indigo-700 px-2.5 py-1 rounded-full text-indigo-200";
+          loginBtn.classList.remove("hidden");
+          logoutBtn.classList.add("hidden");
+        }
+      });
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      refreshSectionDropdowns();
+      showInfoPopup(
+        "Welcome to MockTracker",
+        "You can separate different exams under different sections. Every diagram (circuits, graphs, Venn diagrams, geometry) is automatically recreated with full labels using [SVG_START] and [DIAGRAM_START] blocks!"
+      );
+    });
+
+    // ============================================================================
+    // SAFE SVG SANITIZER & FALLBACK IMAGE COMPRESSION (CTRL+V)
+    // ============================================================================
+    function sanitizeSvgMarkup(rawSvg) {
+      if (!rawSvg) return "";
+      // Strip markdown code fences if AI wrapped the SVG in ```xml or ```svg
+      let cleaned = rawSvg
+        .replace(/```(?:svg|xml|html)?/gi, "")
+        .replace(/```/g, "")
+        .trim();
+      // Remove any script tags or inline event handlers for safety
+      cleaned = cleaned
+        .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, "")
+        .replace(/\son\w+\s*=\s*["'][^"']*["']/gi, "");
+      return cleaned;
+    }
+
+    function compressImageDataUrl(dataUrl, maxWidth = 750, quality = 0.72) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          let width = img.width;
+          let height = img.height;
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, width, height);
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/jpeg", quality));
+        };
+        img.src = dataUrl;
+      });
+    }
+
+    window.addEventListener("paste", async (e) => {
+      const isExamVisible = !document.getElementById("viewExam").classList.contains("hidden");
+      if (!isExamVisible || !currentExam.questions.length) return;
+
+      const items = e.clipboardData?.items || [];
+      for (const item of items) {
+        if (item.type.indexOf("image") !== -1) {
+          e.preventDefault();
+          const blob = item.getAsFile();
+          const reader = new FileReader();
+          reader.onload = async (ev) => {
+            const compressed = await compressImageDataUrl(ev.target.result);
+            currentExam.questions[currentExam.currentIndex].image = compressed;
+            renderCurrentQuestion();
+          };
+          reader.readAsDataURL(blob);
+          break;
+        }
+      }
+    });
+
+    window.handleQuestionImageUpload = function (event) {
+      const file = event.target.files[0];
+      if (!file || !currentExam.questions.length) return;
+      const reader = new FileReader();
+      reader.onload = async (ev) => {
+        const compressed = await compressImageDataUrl(ev.target.result);
+        currentExam.questions[currentExam.currentIndex].image = compressed;
+        renderCurrentQuestion();
+      };
+      reader.readAsDataURL(file);
+    };
+
+    window.removeCurrentQuestionImage = function () {
+      if (!currentExam.questions.length) return;
+      delete currentExam.questions[currentExam.currentIndex].image;
+      renderCurrentQuestion();
+    };
+
+    // ============================================================================
+    // NAVIGATION & AUTH HELPERS
+    // ============================================================================
+    window.showWelcomeScreen = function () {
+      document.getElementById("viewWelcome").classList.remove("hidden");
+      document.getElementById("viewCreate").classList.add("hidden");
+      document.getElementById("viewExam").classList.add("hidden");
+      document.getElementById("viewDashboard").classList.add("hidden");
+    };
+
+    window.proceedFromWelcome = function () {
+      switchMainTab("create");
+    };
+
+    window.showInfoPopup = function (title, message) {
+      document.getElementById("infoPopupTitle").textContent = title;
+      document.getElementById("infoPopupMessage").textContent = message;
+      document.getElementById("infoPopupModal").classList.remove("hidden");
+    };
+
+    window.closeInfoPopup = function () {
+      document.getElementById("infoPopupModal").classList.add("hidden");
+    };
+
+    window.handleGoogleSignIn = async function () {
+      if (!auth) {
+        showInfoPopup("Firebase Error", "Firebase Auth could not initialize.");
+        return;
+      }
+      try {
+        const provider = new GoogleAuthProvider();
+        await signInWithPopup(auth, provider);
+      } catch (err) {
+        if (err.code === "auth/unauthorized-domain") {
+          showInfoPopup(
+            "Authorize Your Domain",
+            `Go to Firebase Console -> Authentication -> Settings -> Authorized domains -> Add domain, and paste:\n\n${window.location.hostname}`
+          );
+        } else {
+          showInfoPopup("Sign-In Notice", err.message);
+        }
+      }
+    };
+
+    window.handleSignOut = async function () {
+      if (auth) await signOut(auth);
+    };
+
+    // ============================================================================
+    // SECTION DROPDOWN & MANUAL INPUT HANDLING
+    // ============================================================================
+    function getUniqueSections() {
+      const map = new Map();
+      allAttempts.forEach(a => {
+        const key = a.section.trim();
+        map.set(key, (map.get(key) || 0) + 1);
+      });
+      return Array.from(map.entries());
+    }
+
+    function refreshSectionDropdowns() {
+      const dropdown = document.getElementById("examSectionDropdown");
+      if (!dropdown) return;
+
+      const currentVal = dropdown.value;
+      dropdown.innerHTML = `
+        <option value="">-- Select Exam Section --</option>
+        <option value="__NEW__">+ Create New Section...</option>
+      `;
+
+      getUniqueSections().forEach(([secName]) => {
+        const opt = document.createElement("option");
+        opt.value = secName;
+        opt.textContent = secName;
+        dropdown.appendChild(opt);
+      });
+
+      if (currentVal && (currentVal === "__NEW__" || getUniqueSections().some(([s]) => s === currentVal))) {
+        dropdown.value = currentVal;
+      }
+    }
+
+    window.handleSectionDropdownChange = function () {
+      const dropdown = document.getElementById("examSectionDropdown");
+      const manualInput = document.getElementById("examSectionManualInput");
+
+      if (dropdown.value === "__NEW__") {
+        manualInput.classList.remove("hidden");
+        manualInput.value = "";
+        manualInput.focus();
+      } else {
+        manualInput.classList.add("hidden");
+        manualInput.value = dropdown.value;
+      }
+    };
+
+    // ============================================================================
+    // UNIVERSAL PARSER: SUPPORTS [SVG_START]...[SVG_END] & [DIAGRAM_START]...[DIAGRAM_END]
+    // ============================================================================
+    function parseStrictTextQuestions(rawText) {
+      const normalized = rawText.replace(/\r\n/g, "\n").trim();
+      if (!normalized) return [];
+
+      let blocks = normalized
+        .split(/\n\s*---+\s*\n/)
+        .map(b => b.trim())
+        .filter(Boolean);
+
+      if (blocks.length === 1) {
+        blocks = normalized
+          .split(/\n(?=(?:Q\d+|Question\s*\d+|\d+)[\s:.)])/i)
+          .map(b => b.trim())
+          .filter(Boolean);
+      }
+
+      const parsedQuestions = [];
+
+      for (const block of blocks) {
+        const rawLines = block.split("\n");
+        if (rawLines.length < 3) continue;
+
+        let questionLines = [];
+        let svgLines = [];
+        let diagramLines = [];
+        const options = [];
+        let answerIndex = -1;
+        let explanationLines = [];
+        let mode = "question";
+        let insideSvg = false;
+        let insideDiagram = false;
+
+        for (const rawLine of rawLines) {
+          const trimmedLine = rawLine.trim();
+
+          // 1. Check for Vector SVG Code Words: [SVG_START] ... [SVG_END]
+          if (/^\[SVG_START\]$/i.test(trimmedLine)) {
+            insideSvg = true;
+            continue;
+          }
+          if (/^\[SVG_END\]$/i.test(trimmedLine)) {
+            insideSvg = false;
+            continue;
+          }
+          if (insideSvg) {
+            svgLines.push(rawLine);
+            continue;
+          }
+
+          // 2. Check for Monospace ASCII Diagram Code Words: [DIAGRAM_START] ... [DIAGRAM_END]
+          if (/^\[DIAGRAM_START\]$/i.test(trimmedLine)) {
+            insideDiagram = true;
+            continue;
+          }
+          if (/^\[DIAGRAM_END\]$/i.test(trimmedLine)) {
+            insideDiagram = false;
+            continue;
+          }
+          if (insideDiagram) {
+            diagramLines.push(rawLine.replace(/\s+$/, ""));
+            continue;
+          }
+
+          if (!trimmedLine) continue;
+
+          const optMatch = trimmedLine.match(/^([A-Ea-e])[).:\-]\s*(.+)$/);
+          const ansMatch = trimmedLine.match(/^(?:Answer|Correct\s*Answer|Ans)\s*[:\-]\s*([A-Ea-e1-5])/i);
+          const expMatch = trimmedLine.match(/^(?:Explanation|Solution|Exp)\s*[:\-]\s*(.*)$/i);
+
+          if (optMatch && (mode === "question" || mode === "options")) {
+            mode = "options";
+            options.push(optMatch[2].trim());
+          } else if (ansMatch) {
+            mode = "answer";
+            const token = ansMatch[1].toUpperCase();
+            if ("ABCDE".includes(token)) {
+              answerIndex = "ABCDE".indexOf(token);
+            } else {
+              answerIndex = parseInt(token, 10) - 1;
+            }
+          } else if (expMatch) {
+            mode = "explanation";
+            if (expMatch[1]) explanationLines.push(expMatch[1].trim());
+          } else {
+            if (mode === "question") {
+              questionLines.push(trimmedLine.replace(/^(?:Q\d+|Question\s*\d+|\d+)[\s:.)]+/i, "").trim());
+            } else if (mode === "options" && options.length > 0) {
+              options[options.length - 1] += " " + trimmedLine;
+            } else if (mode === "explanation") {
+              explanationLines.push(trimmedLine);
+            }
+          }
+        }
+
+        if (questionLines.length > 0 && options.length >= 2 && answerIndex >= 0 && answerIndex < options.length) {
+          parsedQuestions.push({
+            question: questionLines.join("\n"),
+            svg: svgLines.length > 0 ? sanitizeSvgMarkup(svgLines.join("\n")) : "",
+            diagram: diagramLines.length > 0 ? diagramLines.join("\n") : "",
+            options,
+            answer: answerIndex,
+            explanation: explanationLines.join("\n") || "No explanation provided."
+          });
+        }
+      }
+
+      return parsedQuestions;
+    }
+
+    window.handleFileUpload = async function (event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const statusEl = document.getElementById("uploadStatusText");
+      statusEl.textContent = `Reading ${file.name}...`;
+
+      try {
+        if (file.name.toLowerCase().endsWith(".pdf")) {
+          const arrayBuffer = await file.arrayBuffer();
+          const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+          let extracted = "";
+          for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const content = await page.getTextContent();
+            const pageLines = content.items.map(item => item.str).join(" ");
+            extracted += pageLines + "\n";
+          }
+          document.getElementById("rawTextInput").value = extracted;
+          statusEl.textContent = `Extracted text from ${pdf.numPages} PDF page(s).`;
+        } else {
+          const text = await file.text();
+          document.getElementById("rawTextInput").value = text;
+          statusEl.textContent = `Loaded ${file.name} successfully.`;
+        }
+      } catch (err) {
+        statusEl.textContent = "Error reading file: " + err.message;
+      }
+    };
+
+    window.copyStrictAiPrompt = function () {
+      const promptText = `Convert all questions and answers from the attached document into the following STRICT plain text format. Do not use markdown bolding or extra commentary.
+
+CRITICAL RULE FOR EVERY KIND OF DIAGRAM (CIRCUITS, GRAPHS, VENN DIAGRAMS, PHASORS, GEOMETRY, TABLES, BLOCK DIAGRAMS):
+Whenever a question has ANY figure, diagram, circuit, graph, or visual table, you MUST recreate it with 100% of its text labels, numbers, node letters, arrows, and shapes using clean inline <svg> code wrapped strictly between [SVG_START] and [SVG_END] right below the question text!
+- Inside <svg viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">, draw clear lines, circles, paths, resistors/inductors/sources, and <text> elements so every label and value on the original diagram is clearly visible and never overlaps.
+- Do NOT wrap the SVG in markdown code fences (\`\`\`).
+
+Separate every question with "---":
+
+Q1: [Full Question Text]
+[SVG_START]
+<svg viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg">
+  <!-- Draw complete diagram with all <text> labels, arrows, and values here -->
+</svg>
+[SVG_END]
+A) [Option A]
+B) [Option B]
+C) [Option C]
+D) [Option D]
+Answer: [Single Letter A, B, C, or D]
+Explanation: [Brief explanation of the correct answer]
+---
+Q2: [Next Question Text (omit [SVG_START]...[SVG_END] if the question has no diagram)]`;
+
+      navigator.clipboard.writeText(promptText);
+      const btn = document.getElementById("copyPromptBtn");
+      const oldText = btn.textContent;
+      btn.textContent = "Copied Universal SVG + Text Diagram Prompt!";
+      setTimeout(() => (btn.textContent = oldText), 2500);
+    };
+
+    window.loadDemoQuestions = function () {
+      const dropdown = document.getElementById("examSectionDropdown");
+      dropdown.value = "__NEW__";
+      handleSectionDropdownChange();
+      document.getElementById("examSectionManualInput").value = "GATE EE & UIIC AO";
+
+      if (!document.getElementById("paperTitleInput").value) {
+        const existingInSec = allAttempts.filter(a => a.section.toLowerCase() === "gate ee & uiic ao").length;
+        document.getElementById("paperTitleInput").value = `Diagram Demo Paper ${existingInSec + 1}`;
+      }
+
+      document.getElementById("rawTextInput").value = `Q1: In the DC network shown in the figure below, find the current I supplied by the 24 V source and the voltage at node V_A.
+[SVG_START]
+<svg viewBox="0 0 520 220" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+  <rect width="520" height="220" fill="#f8fafc" rx="8"/>
+  <!-- Main circuit wires -->
+  <line x1="70" y1="50" x2="150" y2="50" stroke="#0f172a" stroke-width="2.5"/>
+  <line x1="230" y1="50" x2="430" y2="50" stroke="#0f172a" stroke-width="2.5"/>
+  <line x1="70" y1="175" x2="430" y2="175" stroke="#0f172a" stroke-width="2.5"/>
+  <line x1="70" y1="50" x2="70" y2="85" stroke="#0f172a" stroke-width="2.5"/>
+  <line x1="70" y1="135" x2="70" y2="175" stroke="#0f172a" stroke-width="2.5"/>
+  <!-- 24V DC Voltage Source -->
+  <circle cx="70" cy="110" r="24" fill="#ffffff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="64" y="106" font-size="14" font-weight="bold" fill="#1e40af">+</text>
+  <text x="66" y="124" font-size="16" font-weight="bold" fill="#1e40af">-</text>
+  <text x="15" y="115" font-size="14" font-weight="bold" fill="#1e3a8a">24 V</text>
+  <!-- Current Arrow I -->
+  <polygon points="118,45 130,50 118,55" fill="#dc2626"/>
+  <text x="108" y="38" font-size="13" font-weight="bold" fill="#dc2626">I = ?</text>
+  <!-- Series Resistor R1 = 4 Ohm -->
+  <rect x="150" y="36" width="80" height="28" fill="#e0e7ff" stroke="#4338ca" stroke-width="2" rx="4"/>
+  <text x="166" y="55" font-size="13" font-weight="bold" fill="#312e81">R1 = 4 Ω</text>
+  <!-- Node Va -->
+  <circle cx="290" cy="50" r="4.5" fill="#dc2626"/>
+  <text x="275" y="33" font-size="13" font-weight="bold" fill="#dc2626">V_A</text>
+  <!-- Parallel Branch 1: R2 = 12 Ohm -->
+  <line x1="290" y1="50" x2="290" y2="82" stroke="#0f172a" stroke-width="2.5"/>
+  <rect x="260" y="82" width="60" height="56" fill="#dcfce7" stroke="#15803d" stroke-width="2" rx="4"/>
+  <text x="272" y="115" font-size="13" font-weight="bold" fill="#14532d">12 Ω</text>
+  <line x1="290" y1="138" x2="290" y2="175" stroke="#0f172a" stroke-width="2.5"/>
+  <!-- Parallel Branch 2: R3 = 6 Ohm -->
+  <line x1="430" y1="50" x2="430" y2="82" stroke="#0f172a" stroke-width="2.5"/>
+  <rect x="400" y="82" width="60" height="56" fill="#dcfce7" stroke="#15803d" stroke-width="2" rx="4"/>
+  <text x="416" y="115" font-size="13" font-weight="bold" fill="#14532d">6 Ω</text>
+  <line x1="430" y1="138" x2="430" y2="175" stroke="#0f172a" stroke-width="2.5"/>
+</svg>
+[SVG_END]
+A) I = 2 A, V_A = 16 V
+B) I = 3 A, V_A = 12 V
+C) I = 4 A, V_A = 8 V
+D) I = 6 A, V_A = 12 V
+Answer: B
+Explanation: The 12 Ω and 6 Ω branches are in parallel: R_p = (12 * 6)/(12 + 6) = 4 Ω. Total resistance R_total = R1 + R_p = 4 + 4 = 8 Ω. Current I = 24 V / 8 Ω = 3 A. Node voltage V_A = I * R_p = 3 A * 4 Ω = 12 V.
+---
+Q2: In the AC Phasor & Impedance Diagram shown below, determine the power factor (cos φ) and nature of the circuit.
+[SVG_START]
+<svg viewBox="0 0 480 210" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+  <rect width="480" height="210" fill="#f8fafc" rx="8"/>
+  <!-- Axes -->
+  <line x1="60" y1="170" x2="410" y2="170" stroke="#64748b" stroke-width="2"/>
+  <line x1="60" y1="170" x2="60" y2="25" stroke="#64748b" stroke-width="2"/>
+  <!-- Horizontal R vector -->
+  <line x1="60" y1="170" x2="290" y2="170" stroke="#0284c7" stroke-width="4"/>
+  <text x="155" y="192" font-size="13" font-weight="bold" fill="#0369a1">R = 8 Ω (V_R)</text>
+  <!-- Vertical XL vector -->
+  <line x1="290" y1="170" x2="290" y2="55" stroke="#16a34a" stroke-width="3" stroke-dasharray="5,4"/>
+  <text x="302" y="118" font-size="13" font-weight="bold" fill="#15803d">X_L = 6 Ω (V_L)</text>
+  <!-- Hypotenuse Z vector -->
+  <line x1="60" y1="170" x2="290" y2="55" stroke="#dc2626" stroke-width="3.5"/>
+  <text x="135" y="95" font-size="14" font-weight="bold" fill="#b91c1c">|Z| = 10 Ω</text>
+  <!-- Angle Arc -->
+  <path d="M 125 170 A 65 65 0 0 0 118 141" fill="none" stroke="#4f46e5" stroke-width="2.5"/>
+  <text x="132" y="158" font-size="13" font-weight="bold" fill="#4338ca">φ = 36.87°</text>
+</svg>
+[SVG_END]
+A) 0.6 Lagging
+B) 0.8 Lagging
+C) 0.8 Leading
+D) 0.75 Lagging
+Answer: B
+Explanation: Power factor cos φ = R / |Z| = 8 / 10 = 0.8. Since inductive reactance X_L is positive, the current lags behind the voltage (0.8 Lagging).
+---
+Q3: Study the Venn Diagram below showing the number of candidates who passed in Quantitative Aptitude (Q), Reasoning (R), and English (E). How many candidates passed in BOTH Quantitative Aptitude and Reasoning, but NOT in English?
+[SVG_START]
+<svg viewBox="0 0 460 240" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+  <rect width="460" height="240" fill="#f8fafc" rx="8"/>
+  <!-- 3 Overlapping Circles -->
+  <circle cx="185" cy="95" r="65" fill="rgba(79, 70, 229, 0.12)" stroke="#4f46e5" stroke-width="2.5"/>
+  <circle cx="275" cy="95" r="65" fill="rgba(16, 185, 129, 0.12)" stroke="#059669" stroke-width="2.5"/>
+  <circle cx="230" cy="160" r="65" fill="rgba(245, 158, 11, 0.12)" stroke="#d97706" stroke-width="2.5"/>
+  <!-- Circle Titles -->
+  <text x="85" y="45" font-size="13" font-weight="bold" fill="#3730a3">Quant (Q)</text>
+  <text x="315" y="45" font-size="13" font-weight="bold" fill="#065f46">Reasoning (R)</text>
+  <text x="295" y="218" font-size="13" font-weight="bold" fill="#92400e">English (E)</text>
+  <!-- Region Numbers -->
+  <text x="150" y="85" font-size="15" font-weight="bold" fill="#1e293b">42</text>
+  <text x="295" y="85" font-size="15" font-weight="bold" fill="#1e293b">38</text>
+  <text x="223" y="195" font-size="15" font-weight="bold" fill="#1e293b">50</text>
+  <!-- Intersections -->
+  <text x="223" y="78" font-size="16" font-weight="bold" fill="#dc2626">19</text>
+  <text x="182" y="140" font-size="14" font-weight="bold" fill="#1e293b">14</text>
+  <text x="262" y="140" font-size="14" font-weight="bold" fill="#1e293b">11</text>
+  <text x="223" y="122" font-size="15" font-weight="bold" fill="#4338ca">25</text>
+</svg>
+[SVG_END]
+A) 19
+B) 25
+C) 44
+D) 14
+Answer: A
+Explanation: Looking at the overlapping region between Quant (Q) and Reasoning (R), the total overlap is 19 + 25 = 44. Excluding the English (E) circle leaves 19 candidates.`;
+    };
+
+    // ============================================================================
+    // LIVE EXAM EXECUTION & LAST-QUESTION POP-UP LOGIC
+    // ============================================================================
+    window.parseAndStartExam = function () {
+      const dropdown = document.getElementById("examSectionDropdown");
+      const manualInput = document.getElementById("examSectionManualInput");
+
+      let section = "";
+      if (dropdown.value === "__NEW__") {
+        section = manualInput.value.trim();
+      } else {
+        section = dropdown.value.trim();
+      }
+
+      const paperTitle = document.getElementById("paperTitleInput").value.trim();
+      const rawText = document.getElementById("rawTextInput").value;
+      const errBox = document.getElementById("parseErrorBox");
+
+      errBox.classList.add("hidden");
+
+      if (!section || !paperTitle) {
+        errBox.textContent = "Please select or enter an Exam Section and enter a Paper Name.";
+        errBox.classList.remove("hidden");
+        return;
+      }
+
+      const questions = parseStrictTextQuestions(rawText);
+      if (questions.length === 0) {
+        errBox.textContent =
+          "Could not parse any valid questions. Make sure each question has options A), B), C), D) and a line starting with 'Answer: A/B/C/D'.";
+        errBox.classList.remove("hidden");
+        return;
+      }
+
+      currentExam = {
+        section,
+        paperTitle,
+        durationMinutes: parseFloat(document.getElementById("durationInput").value) || 30,
+        posMarks: parseFloat(document.getElementById("positiveMarksInput").value) || 1,
+        negMarks: parseFloat(document.getElementById("negativeMarksInput").value) || 0,
+        questions,
+        responses: {},
+        reviewFlags: {},
+        currentIndex: 0,
+        remainingSeconds: Math.round((parseFloat(document.getElementById("durationInput").value) || 30) * 60),
+        timerInterval: null
+      };
+
+      document.getElementById("liveExamBadge").textContent = currentExam.section;
+      document.getElementById("livePaperTitle").textContent = currentExam.paperTitle;
+      document.getElementById("liveMarkingInfo").textContent = `+${currentExam.posMarks} / -${currentExam.negMarks}`;
+
+      document.getElementById("viewWelcome").classList.add("hidden");
+      document.getElementById("viewCreate").classList.add("hidden");
+      document.getElementById("viewDashboard").classList.add("hidden");
+      document.getElementById("viewExam").classList.remove("hidden");
+
+      renderCurrentQuestion();
+      startExamTimer();
+    };
+
+    function startExamTimer() {
+      if (currentExam.timerInterval) clearInterval(currentExam.timerInterval);
+      updateTimerUI();
+      currentExam.timerInterval = setInterval(() => {
+        currentExam.remainingSeconds--;
+        updateTimerUI();
+        if (currentExam.remainingSeconds <= 0) {
+          clearInterval(currentExam.timerInterval);
+          finalizeExamSubmission();
+        }
+      }, 1000);
+    }
+
+    function updateTimerUI() {
+      const mins = Math.floor(currentExam.remainingSeconds / 60);
+      const secs = currentExam.remainingSeconds % 60;
+      document.getElementById("liveTimerDisplay").textContent =
+        `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+    }
+
+    function renderCurrentQuestion() {
+      const idx = currentExam.currentIndex;
+      const total = currentExam.questions.length;
+      const qObj = currentExam.questions[idx];
+
+      document.getElementById("liveQuestionNumber").textContent =
+        `Question ${idx + 1} of ${total}`;
+      document.getElementById("liveQuestionText").textContent = qObj.question;
+
+      // 1. Render Vector SVG Diagram if present
+      const svgWindow = document.getElementById("liveSvgWindow");
+      const svgContainer = document.getElementById("liveSvgContainer");
+      if (qObj.svg && qObj.svg.trim().length > 0) {
+        svgContainer.innerHTML = sanitizeSvgMarkup(qObj.svg);
+        svgWindow.classList.remove("hidden");
+      } else {
+        svgContainer.innerHTML = "";
+        svgWindow.classList.add("hidden");
+      }
+
+      // 2. Render ASCII Monospace Diagram if present
+      const diagWindow = document.getElementById("liveDiagramWindow");
+      const diagPre = document.getElementById("liveDiagramPre");
+      if (qObj.diagram && qObj.diagram.trim().length > 0) {
+        diagPre.textContent = qObj.diagram;
+        diagWindow.classList.remove("hidden");
+      } else {
+        diagPre.textContent = "";
+        diagWindow.classList.add("hidden");
+      }
+
+      // 3. Render Pasted Screenshot Fallback if present
+      const imgContainer = document.getElementById("liveQuestionImageContainer");
+      const imgEl = document.getElementById("liveQuestionImage");
+      if (qObj.image) {
+        imgEl.src = qObj.image;
+        imgContainer.classList.remove("hidden");
+      } else {
+        imgEl.src = "";
+        imgContainer.classList.add("hidden");
+      }
+
+      const nextBtn = document.getElementById("nextQBtn");
+      if (idx === total - 1) {
+        nextBtn.textContent = "Save & Finish";
+      } else {
+        nextBtn.textContent = "Save & Next";
+      }
+
+      const optsContainer = document.getElementById("liveOptionsContainer");
+      optsContainer.innerHTML = "";
+
+      const letters = ["A", "B", "C", "D", "E"];
+      qObj.options.forEach((optText, oIdx) => {
+        const isSelected = currentExam.responses[idx] === oIdx;
+        const btn = document.createElement("button");
+        btn.className = `w-full text-left p-3.5 rounded-xl border text-sm transition flex items-start gap-3 ${
+          isSelected
+            ? "bg-indigo-50 border-indigo-600 text-indigo-950 font-semibold ring-1 ring-indigo-600"
+            : "bg-white border-slate-200 hover:bg-slate-50 text-slate-800"
+        }`;
+        btn.onclick = () => {
+          currentExam.responses[idx] = oIdx;
+          renderCurrentQuestion();
+        };
+        btn.innerHTML = `
+          <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+            isSelected ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600"
+          }">${letters[oIdx]}</span>
+          <span class="leading-snug">${escapeHtml(optText)}</span>
+        `;
+        optsContainer.appendChild(btn);
+      });
+
+      renderQuestionPalette();
+    }
+
+    function renderQuestionPalette() {
+      const grid = document.getElementById("questionPaletteGrid");
+      grid.innerHTML = "";
+      currentExam.questions.forEach((q, i) => {
+        const isCurrent = i === currentExam.currentIndex;
+        const isAnswered = currentExam.responses[i] !== undefined;
+        const isReview = Boolean(currentExam.reviewFlags[i]);
+        const hasAnyVisual = Boolean(q.svg || q.diagram || q.image);
+
+        let colorClass = "bg-slate-100 text-slate-700 hover:bg-slate-200";
+        if (isReview) colorClass = "bg-amber-500 text-white";
+        else if (isAnswered) colorClass = "bg-emerald-600 text-white";
+
+        const ringClass = isCurrent ? "ring-2 ring-indigo-600 ring-offset-1" : "";
+
+        const btn = document.createElement("button");
+        btn.className = `h-9 rounded-lg text-xs font-bold transition relative ${colorClass} ${ringClass}`;
+        btn.innerHTML = `${i + 1}${hasAnyVisual ? '<span class="absolute top-0.5 right-1 text-[9px]" title="Has Diagram">&#9638;</span>' : ''}`;
+        btn.onclick = () => {
+          currentExam.currentIndex = i;
+          renderCurrentQuestion();
+        };
+        grid.appendChild(btn);
+      });
+    }
+
+    window.navigateQuestion = function (delta) {
+      const next = currentExam.currentIndex + delta;
+      if (next >= 0 && next < currentExam.questions.length) {
+        currentExam.currentIndex = next;
+        renderCurrentQuestion();
+      }
+    };
+
+    window.handleSaveAndNext = function () {
+      const isLast = currentExam.currentIndex === currentExam.questions.length - 1;
+      if (isLast) {
+        openLastQuestionModal(true);
+      } else {
+        currentExam.currentIndex++;
+        renderCurrentQuestion();
+      }
+    };
+
+    window.openLastQuestionModal = function (fromLastQuestionButton = true) {
+      const total = currentExam.questions.length;
+      const answeredCount = Object.keys(currentExam.responses).length;
+      const unansweredCount = total - answeredCount;
+      const reviewCount = Object.values(currentExam.reviewFlags).filter(Boolean).length;
+
+      document.getElementById("modalAnsweredCount").textContent = answeredCount;
+      document.getElementById("modalUnansweredCount").textContent = unansweredCount;
+      document.getElementById("modalReviewCount").textContent = reviewCount;
+
+      const titleEl = document.getElementById("lastQModalTitle");
+      const badgeEl = document.getElementById("lastQModalBadge");
+      const descEl = document.getElementById("lastQModalDesc");
+
+      if (fromLastQuestionButton) {
+        badgeEl.textContent = "Last Question Reached";
+        titleEl.textContent = "You have reached the last question!";
+        descEl.textContent = "Do you want to submit your test now or check back your answers from Question 1?";
+      } else {
+        badgeEl.textContent = "Confirm Submission";
+        titleEl.textContent = "Ready to submit your paper?";
+        descEl.textContent = "You can either submit your test right now or jump back to Question 1 to verify your answers.";
+      }
+
+      document.getElementById("lastQuestionModal").classList.remove("hidden");
+    };
+
+    window.closeLastQuestionModal = function () {
+      document.getElementById("lastQuestionModal").classList.add("hidden");
+    };
+
+    window.checkBackAnswersFromFirst = function () {
+      closeLastQuestionModal();
+      currentExam.currentIndex = 0;
+      renderCurrentQuestion();
+    };
+
+    window.confirmSubmitFromModal = function () {
+      closeLastQuestionModal();
+      finalizeExamSubmission();
+    };
+
+    window.clearCurrentResponse = function () {
+      delete currentExam.responses[currentExam.currentIndex];
+      renderCurrentQuestion();
+    };
+
+    window.toggleMarkForReview = function () {
+      const idx = currentExam.currentIndex;
+      currentExam.reviewFlags[idx] = !currentExam.reviewFlags[idx];
+      renderCurrentQuestion();
+    };
+
+    async function finalizeExamSubmission() {
+      if (currentExam.timerInterval) clearInterval(currentExam.timerInterval);
+
+      let correct = 0;
+      let wrong = 0;
+      let skipped = 0;
+
+      currentExam.questions.forEach((q, idx) => {
+        const userAns = currentExam.responses[idx];
+        if (userAns === undefined) skipped++;
+        else if (userAns === q.answer) correct++;
+        else wrong++;
+      });
+
+      const maxMarks = currentExam.questions.length * currentExam.posMarks;
+      const rawScored = correct * currentExam.posMarks - wrong * currentExam.negMarks;
+      const scoredMarks = Number(rawScored.toFixed(2));
+      const percentage = Number(Math.max(0, (scoredMarks / maxMarks) * 100).toFixed(1));
+
+      const attemptRecord = {
+        id: "att_" + Date.now(),
+        timestamp: Date.now(),
+        dateStr: new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
+        section: currentExam.section,
+        paperTitle: currentExam.paperTitle,
+        totalQuestions: currentExam.questions.length,
+        correct,
+        wrong,
+        skipped,
+        scoredMarks,
+        maxMarks,
+        percentage,
+        questions: currentExam.questions,
+        responses: currentExam.responses
+      };
+
+      allAttempts.push(attemptRecord);
+      saveLocalAttempts();
+      activeSectionFilter = currentExam.section;
+
+      syncWithFirestore("push");
+
+      switchMainTab("dashboard");
+      openPaperReview(attemptRecord.id);
+    }
+
+    // ============================================================================
+    // EDIT / RENAME SECTION NAME MODAL LOGIC
+    // ============================================================================
+    window.openEditSectionModal = function (sectionToEdit = activeSectionFilter) {
+      if (!sectionToEdit || allAttempts.length === 0) {
+        showInfoPopup("No Section Selected", "Attempt at least one paper first to create and edit an exam section.");
+        return;
+      }
+      activeSectionFilter = sectionToEdit;
+      document.getElementById("currentSectionNameLabel").textContent = sectionToEdit;
+      document.getElementById("newSectionNameInput").value = sectionToEdit;
+      document.getElementById("editSectionModal").classList.remove("hidden");
+    };
+
+    window.closeEditSectionModal = function () {
+      document.getElementById("editSectionModal").classList.add("hidden");
+    };
+
+    window.saveEditedSectionName = function () {
+      const oldName = activeSectionFilter;
+      const newName = document.getElementById("newSectionNameInput").value.trim();
+
+      if (!newName) {
+        showInfoPopup("Invalid Name", "Section name cannot be empty.");
+        return;
+      }
+
+      allAttempts.forEach(attempt => {
+        if (attempt.section.trim() === oldName) {
+          attempt.section = newName;
+        }
+      });
+
+      activeSectionFilter = newName;
+      saveLocalAttempts();
+      syncWithFirestore("push");
+      closeEditSectionModal();
+      renderDashboard();
+    };
+
+    // ============================================================================
+    // SECTION-WISE DASHBOARD & CHARTS
+    // ============================================================================
+    window.switchMainTab = function (tab) {
+      document.getElementById("viewWelcome").classList.add("hidden");
+      document.getElementById("viewCreate").classList.add("hidden");
+      document.getElementById("viewExam").classList.add("hidden");
+      document.getElementById("viewDashboard").classList.add("hidden");
+
+      const welcomeBtn = document.getElementById("navWelcomeBtn");
+      const createBtn = document.getElementById("navCreateBtn");
+      const dashBtn = document.getElementById("navDashBtn");
+
+      const activeClass = "px-3 py-1.5 rounded-lg text-sm font-medium bg-indigo-700 text-white transition";
+      const inactiveClass = "px-3 py-1.5 rounded-lg text-sm font-medium text-indigo-200 hover:bg-indigo-800 transition";
+
+      welcomeBtn.className = inactiveClass;
+      createBtn.className = inactiveClass;
+      dashBtn.className = inactiveClass;
+
+      if (tab === "welcome") {
+        document.getElementById("viewWelcome").classList.remove("hidden");
+        welcomeBtn.className = activeClass;
+      } else if (tab === "create") {
+        document.getElementById("viewCreate").classList.remove("hidden");
+        createBtn.className = activeClass;
+        refreshSectionDropdowns();
+      } else {
+        document.getElementById("viewDashboard").classList.remove("hidden");
+        dashBtn.className = activeClass;
+        renderDashboard();
+      }
+    };
+
+    function renderDashboard() {
+      const sections = getUniqueSections();
+      const tabsContainer = document.getElementById("sectionTabsContainer");
+      tabsContainer.innerHTML = "";
+
+      if (sections.length === 0) {
+        tabsContainer.innerHTML = `<span class="text-xs text-slate-400 py-1">No papers attempted yet. Click "+ New Mock Test" to take your first paper!</span>`;
+        document.getElementById("statSectionName").textContent = "No Data";
+        document.getElementById("statPapersCount").textContent = "0";
+        document.getElementById("statAvgPercent").textContent = "0%";
+        document.getElementById("statBestPercent").textContent = "0%";
+        document.getElementById("sectionHistoryTableBody").innerHTML = "";
+        updateSectionCharts([]);
+        return;
+      }
+
+      if (!activeSectionFilter || !sections.some(([s]) => s === activeSectionFilter)) {
+        activeSectionFilter = sections[0][0];
+      }
+
+      sections.forEach(([secName, count]) => {
+        const isActive = secName === activeSectionFilter;
+        const wrapper = document.createElement("div");
+        wrapper.className = "inline-flex items-center rounded-lg overflow-hidden border " +
+          (isActive ? "border-indigo-600 bg-indigo-600 text-white shadow-xs" : "border-slate-200 bg-slate-100 text-slate-700 hover:bg-slate-200");
+
+        const selectBtn = document.createElement("button");
+        selectBtn.className = "px-3 py-1.5 text-xs font-bold flex items-center gap-1.5";
+        selectBtn.innerHTML = `<span>${escapeHtml(secName)}</span><span class="px-1.5 py-0.2 rounded-full text-[10px] ${
+          isActive ? "bg-indigo-800 text-indigo-100" : "bg-slate-200 text-slate-600"
+        }">${count}</span>`;
+        selectBtn.onclick = () => {
+          activeSectionFilter = secName;
+          closePaperReview();
+          renderDashboard();
+        };
+
+        const editIconBtn = document.createElement("button");
+        editIconBtn.title = `Rename ${secName}`;
+        editIconBtn.className = `px-2 py-1.5 text-xs border-l ${
+          isActive ? "border-indigo-500 hover:bg-indigo-700 text-indigo-100" : "border-slate-200 hover:bg-slate-300 text-slate-500"
+        }`;
+        editIconBtn.innerHTML = "&#9998;";
+        editIconBtn.onclick = (e) => {
+          e.stopPropagation();
+          openEditSectionModal(secName);
+        };
+
+        wrapper.appendChild(selectBtn);
+        wrapper.appendChild(editIconBtn);
+        tabsContainer.appendChild(wrapper);
+      });
+
+      const sectionPapers = allAttempts
+        .filter(a => a.section.trim() === activeSectionFilter)
+        .sort((a, b) => a.timestamp - b.timestamp);
+
+      const avgPct =
+        sectionPapers.reduce((acc, p) => acc + p.percentage, 0) / sectionPapers.length;
+      const bestPct = Math.max(...sectionPapers.map(p => p.percentage));
+
+      document.getElementById("statSectionName").textContent = activeSectionFilter;
+      document.getElementById("statPapersCount").textContent = sectionPapers.length;
+      document.getElementById("statAvgPercent").textContent = `${avgPct.toFixed(1)}%`;
+      document.getElementById("statBestPercent").textContent = `${bestPct.toFixed(1)}%`;
+
+      const tbody = document.getElementById("sectionHistoryTableBody");
+      tbody.innerHTML = "";
+      sectionPapers.forEach((paper, idx) => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-slate-50";
+        tr.innerHTML = `
+          <td class="py-3 px-3 font-semibold text-slate-500">${idx + 1}</td>
+          <td class="py-3 px-3 font-bold text-slate-900">${escapeHtml(paper.paperTitle)}</td>
+          <td class="py-3 px-3 text-slate-500">${paper.dateStr}</td>
+          <td class="py-3 px-3 font-semibold text-slate-800">${paper.scoredMarks} / ${paper.maxMarks}</td>
+          <td class="py-3 px-3">
+            <span class="px-2 py-0.5 rounded font-bold ${
+              paper.percentage >= 70
+                ? "bg-emerald-100 text-emerald-800"
+                : paper.percentage >= 45
+                ? "bg-amber-100 text-amber-800"
+                : "bg-rose-100 text-rose-800"
+            }">${paper.percentage}%</span>
+          </td>
+          <td class="py-3 px-3 text-slate-600">
+            <span class="text-emerald-600 font-bold">${paper.correct}C</span> /
+            <span class="text-rose-600 font-bold">${paper.wrong}W</span> /
+            <span class="text-slate-400">${paper.skipped}S</span>
+          </td>
+          <td class="py-3 px-3 text-right space-x-2">
+            <button onclick="openPaperReview('${paper.id}')" class="text-indigo-600 hover:underline font-bold">
+              Review Solutions
+            </button>
+            <button onclick="deletePaperAttempt('${paper.id}')" class="text-rose-500 hover:underline">
+              Delete
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      updateSectionCharts(sectionPapers);
+    }
+
+    function updateSectionCharts(sectionPapers) {
+      const labels = sectionPapers.map((p, i) => `P${i + 1}: ${p.paperTitle}`);
+      const percentages = sectionPapers.map(p => p.percentage);
+      const scoredList = sectionPapers.map(p => p.scoredMarks);
+      const maxList = sectionPapers.map(p => p.maxMarks);
+
+      const lineCtx = document.getElementById("progressionLineChart").getContext("2d");
+      if (lineChartInstance) lineChartInstance.destroy();
+      lineChartInstance = new Chart(lineCtx, {
+        type: "line",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: `${activeSectionFilter} Score Progression (%)`,
+              data: percentages,
+              borderColor: "#4f46e5",
+              backgroundColor: "rgba(79, 70, 229, 0.12)",
+              borderWidth: 2.5,
+              tension: 0.3,
+              fill: true,
+              pointRadius: 5,
+              pointBackgroundColor: "#4f46e5"
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true, max: 100, title: { display: true, text: "Percentage (%)" } }
+          }
+        }
+      });
+
+      const barCtx = document.getElementById("marksBarChart").getContext("2d");
+      if (barChartInstance) barChartInstance.destroy();
+      barChartInstance = new Chart(barCtx, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: "Marks Scored",
+              data: scoredList,
+              backgroundColor: "#10b981",
+              borderRadius: 6
+            },
+            {
+              label: "Max Marks",
+              data: maxList,
+              backgroundColor: "#e2e8f0",
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true, title: { display: true, text: "Marks" } }
+          }
+        }
+      });
+    }
+
+    window.openPaperReview = function (attemptId) {
+      const paper = allAttempts.find(a => a.id === attemptId);
+      if (!paper || !paper.questions) return;
+
+      document.getElementById("reviewSectionBadge").textContent = paper.section;
+      document.getElementById("reviewPaperTitle").textContent =
+        `${paper.paperTitle} — Detailed Solutions (${paper.scoredMarks}/${paper.maxMarks} Marks, ${paper.percentage}%)`;
+
+      const listEl = document.getElementById("reviewQuestionsList");
+      listEl.innerHTML = "";
+      const letters = ["A", "B", "C", "D", "E"];
+
+      paper.questions.forEach((q, idx) => {
+        const userAns = paper.responses ? paper.responses[idx] : undefined;
+        const isCorrect = userAns === q.answer;
+        const statusBadge =
+          userAns === undefined
+            ? `<span class="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-bold">Skipped</span>`
+            : isCorrect
+            ? `<span class="text-[11px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">Correct</span>`
+            : `<span class="text-[11px] bg-rose-100 text-rose-800 px-2 py-0.5 rounded font-bold">Wrong</span>`;
+
+        const card = document.createElement("div");
+        card.className = "p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2";
+
+        const optsHtml = q.options
+          .map((opt, oIdx) => {
+            let style = "text-slate-600";
+            if (oIdx === q.answer) style = "text-emerald-700 font-bold";
+            else if (oIdx === userAns && userAns !== q.answer) style = "text-rose-600 line-through font-semibold";
+            return `<div class="text-xs ${style}">${letters[oIdx]}) ${escapeHtml(opt)}</div>`;
+          })
+          .join("");
+
+        const svgHtml = q.svg
+          ? `<div class="my-2 rounded-lg overflow-hidden border border-indigo-200 bg-white p-3 svg-diagram-container">${sanitizeSvgMarkup(q.svg)}</div>`
+          : "";
+
+        const diagramHtml = q.diagram
+          ? `<div class="my-2 rounded-lg overflow-hidden border border-slate-700 bg-slate-900 text-emerald-300">
+               <div class="bg-slate-800 px-3 py-1 text-[10px] font-mono text-indigo-300 uppercase">Recreated Text Schematic</div>
+               <pre class="p-3 text-xs font-mono leading-snug overflow-x-auto whitespace-pre">${escapeHtml(q.diagram)}</pre>
+             </div>`
+          : "";
+
+        const imgHtml = q.image
+          ? `<div class="my-2"><img src="${q.image}" alt="Question Diagram" class="max-h-56 rounded-lg border border-slate-200" /></div>`
+          : "";
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-500">Question ${idx + 1}</span>
+            ${statusBadge}
+          </div>
+          <p class="text-sm font-semibold text-slate-900 whitespace-pre-line">${escapeHtml(q.question)}</p>
+          ${svgHtml}
+          ${diagramHtml}
+          ${imgHtml}
+          <div class="space-y-1 pl-2 border-l-2 border-slate-200">${optsHtml}</div>
+          <p class="text-xs text-indigo-900 bg-indigo-50 p-2.5 rounded-lg border border-indigo-100">
+            <strong>Explanation:</strong> ${escapeHtml(q.explanation || "No explanation provided.")}
+          </p>
+        `;
+        listEl.appendChild(card);
+      });
+
+      const panel = document.getElementById("paperReviewPanel");
+      panel.classList.remove("hidden");
+      panel.scrollIntoView({ behavior: "smooth" });
+    };
+
+    window.closePaperReview = function () {
+      document.getElementById("paperReviewPanel").classList.add("hidden");
+    };
+
+    window.deletePaperAttempt = function (attemptId) {
+      if (!confirm("Delete this paper attempt from your history?")) return;
+      allAttempts = allAttempts.filter(a => a.id !== attemptId);
+      saveLocalAttempts();
+      syncWithFirestore("push");
+      renderDashboard();
+    };
+
+    window.exportBackupJson = function () {
+      const blob = new Blob([JSON.stringify(allAttempts, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `mock-test-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+    };
+
+    window.importBackupJson = async function (event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const imported = JSON.parse(text);
+        if (Array.isArray(imported)) {
+          const map = new Map();
+          [...allAttempts, ...imported].forEach(item => map.set(item.id, item));
+          allAttempts = Array.from(map.values());
+          saveLocalAttempts();
+          syncWithFirestore("push");
+          renderDashboard();
+          showInfoPopup("Backup Imported", "Your exam sections and paper history have been restored.");
+        }
+      } catch (e) {
+        showInfoPopup("Import Error", "Invalid backup JSON file.");
+      }
+    };
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+  </script>
+</body>
+</html>
